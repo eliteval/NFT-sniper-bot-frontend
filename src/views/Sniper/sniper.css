@@ -1,0 +1,92 @@
+.mModal .modal-dialog{
+    max-width: 900px !important;
+    margin-top: -85px;
+}
+.mModalSm .modal-dialog{
+    max-width: 400px !important;
+    margin-top: -157px;
+}
+.divFlexStart{
+    align-items: flex-end;
+    display: contents !important;
+}
+.card1{
+    max-width: 700px;
+    border: solid 1px !important;
+    border-radius: 0px !important;
+    border-image: linear-gradient( 
+    153.93deg, #9c9386 6.36%, #2675f6 84.15%) 1 !important;
+    margin: auto;
+}
+.btn1{
+    color: white !important;
+    border-radius: 0px !important;
+   
+    margin: 0px !important;
+}
+.startBtn{
+    text-align: right;
+}
+.startBtn button{
+    text-align: right;
+    border-color: #2675f6 !important;
+    position: relative !important;
+    width: max-content !important;
+    border-top: 0px;
+    border-right: 0px;
+}
+.infoDiv{
+    border: solid 2px #e1c74ed1;
+    border-radius: 6px;
+    padding: 20px;
+}
+.infoDiv Button{
+    position: relative;
+    /* top: -19px; */
+    margin-top: -61px !important;
+    background: #27293d !important;
+    border: solid 1px #bfaa4a !important;
+}
+.infoDiv Button:hover{
+    position: relative;
+    /* top: -19px; */
+    margin-top: -61px !important;
+    background: #27293d !important;
+    border: solid 1px #bfaa4a !important;
+}
+.infoDiv .infoRow{
+   display: flex;
+}
+.infoDiv .infoRow .infoLabel{
+    width: 200px;
+    text-align: right;
+    padding-right: 11px;
+    color: #bfaa4a;
+    font-size: 13px;
+    font-style: italic;
+}
+.infoDiv .infoRow .infoContent{
+    word-break: break-all;
+    color: white;
+    font-size: 13px;
+    width: calc(100% - 210px);
+}
+
+.form1{
+    color: #bfaa4a;
+    font-size: 13px;
+    /* font-style: italic; */
+}
+.table-responsive {
+    overflow: auto !important;
+}
+.word-breakall{
+    word-break: break-all;
+}
+.detailBtnDiv button{
+    min-width: 200px;
+}
+.detailInfo label{
+    color: #bfaa4a;
+    font-size: 13px;
+}
