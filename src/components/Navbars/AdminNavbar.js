@@ -109,7 +109,8 @@ const AdminNavbar = (props) => {
             <span className="navbar-toggler-bar navbar-kebab" />
             <span className="navbar-toggler-bar navbar-kebab" />
             <span className="navbar-toggler-bar navbar-kebab" />
-          </button>    
+          </button>
+          <span style={{ color: "pink" }}>Wallet: {props.credential.loginUserName}</span>
           <Collapse navbar isOpen={collapseOpen}>
             <Nav className="ml-auto" navbar>
 
@@ -132,17 +133,17 @@ const AdminNavbar = (props) => {
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-navbar" right tag="ul">
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item" onClick={()=>props.history.push('/bot/settings')}>Change Password</DropdownItem>
+                    <DropdownItem className="nav-item" onClick={() => props.history.push('/bot/settings')}>Change Password</DropdownItem>
                   </NavLink>
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item" onClick={()=>props.LogOutSuccess()}>Log out</DropdownItem>
+                    <DropdownItem className="nav-item" onClick={() => props.LogOutSuccess()}>Log out</DropdownItem>
                   </NavLink>
                 </DropdownMenu>
               </UncontrolledDropdown>
               <li className="separator d-lg-none" />
             </Nav>
-          </Collapse>     
+          </Collapse>
         </Container>
       </Navbar>
 

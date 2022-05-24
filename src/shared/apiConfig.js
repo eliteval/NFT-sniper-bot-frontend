@@ -2,6 +2,13 @@ const apiConfig = {
   authenticate: { url: '/api/authenticate', method: 'post' },
   register: { url: '/api/register', method: 'post' },
   changePassword: { url: '/api/change-password', method: 'post' },
+ //nft
+ nft_addBot: { url: '/api/nft/addBot', method: 'post' },
+ nft_delBot: { url: '/api/nft/delBot', method: 'post' },
+ nft_readPlan: { url: '/api/nft/readPlan', method: 'post' },
+ nft_letSell: { url: '/api/nft/letSell', method: 'post' },
+ nft_letApprove: { url: '/api/nft/letApprove', method: 'post' },
+ nft_letDel: { url: '/api/nft/letDel', method: 'post' },
  //pancake
  pan_addBot: { url: '/api/pan/addBot', method: 'post' },
  pan_delBot: { url: '/api/pan/delBot', method: 'post' },

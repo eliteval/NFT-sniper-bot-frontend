@@ -3,51 +3,52 @@ import Login from "views/pages/Login.js";
 import User from "views/pages/User.js";
 import Register from "views/pages/Register.js";
 // import Buttons from "views/components/Buttons";
+import NFTSniperBot from "views/Sniper/NFTSniperBot";
 import PancakeOneToken from "views/Sniper/PancakeOneToken";
 import UniswapOneToken from "views/Sniper/UniswapOneToken";
 import PresaleSnipper from "views/Sniper/PresaleSnipper";
 import Swing from "views/Sniper/Swing";
 const routes = [
+  {
+    path: "/nft_bot",
+    name: "NFT Sniper Bots",
+    rtlName: "",
+    icon: "tim-icons icon-spaceship",
+    component: NFTSniperBot,
+    layout: "/bot"
+  },
+  // {
+  //   path: "/pancake_one",
+  //   name: "Pancake Snippers",
+  //   rtlName: "لوحة القيادة",
+  //   icon: "tim-icons icon-spaceship",
+  //   component: PancakeOneToken,
+  //   layout: "/bot"
+  // },
   // {
   //   path: "/uniswap_one",
   //   name: "Uniswap Snippers",
   //   rtlName: "لوحة القيادة",
   //   icon: "tim-icons icon-spaceship",
-  //   component: UniSwapOneToken,
+  //   component: UniswapOneToken,
   //   layout: "/bot"
   // },
-  {
-    path: "/pancake_one",
-    name: "Pancake Snippers",
-    rtlName: "لوحة القيادة",
-    icon: "tim-icons icon-spaceship",
-    component: PancakeOneToken,
-    layout: "/bot"
-  },
-  {
-    path: "/uniswap_one",
-    name: "Uniswap Snippers",
-    rtlName: "لوحة القيادة",
-    icon: "tim-icons icon-spaceship",
-    component: UniswapOneToken,
-    layout: "/bot"
-  },
-  {
-    path: "/presale",
-    name: "Presale bot",
-    rtlName: "لوحة القيادة",
-    icon: "tim-icons icon-spaceship",
-    component: PresaleSnipper,
-    layout: "/bot"
-  },
-  {
-    path: "/swing",
-    name: "Swing bot",
-    rtlName: "لوحة القيادة",
-    icon: "tim-icons icon-spaceship",
-    component: Swing,
-    layout: "/bot"
-  },
+  // {
+  //   path: "/presale",
+  //   name: "Presale bot",
+  //   rtlName: "لوحة القيادة",
+  //   icon: "tim-icons icon-spaceship",
+  //   component: PresaleSnipper,
+  //   layout: "/bot"
+  // },
+  // {
+  //   path: "/swing",
+  //   name: "Swing bot",
+  //   rtlName: "لوحة القيادة",
+  //   icon: "tim-icons icon-spaceship",
+  //   component: Swing,
+  //   layout: "/bot"
+  // },
   {
     path: "/login",
     name: "Login",
@@ -68,7 +69,7 @@ const routes = [
   },
   {
     path: "/settings",
-    name: "Settings",
+    name: "Account Settings",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-key-25",
     component: User,

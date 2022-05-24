@@ -42,8 +42,7 @@ ReactDOM.render(
         <Switch>
           <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
           <PrivateRoute path="/bot" />
-          {/* <Route path="/rtl" render={(props) => <RTLLayout {...props} />} /> */}
-          <Redirect from="/" to="/bot/pancake_one" />
+          <Redirect from="/" to="/bot/nft_bot" />
         </Switch>
       </BrowserRouter>
     </PersistGate>

@@ -95,19 +95,22 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
         <Container>
           <Col className="ml-auto mr-auto" lg="4" md="6">
             <Form className="form">
-              <Card className="card-login card-white">
-                <CardHeader>
+              <Card className="card-login card-white" style={{backgroundColor: '#131313'}}>
+                <CardHeader style={{paddingBottom: '10px'}}>
                   <img
                     alt="..."
-                    src={require("assets/img/card-primary.png").default}
-                  />
-                  <CardTitle tag="h1">Log in</CardTitle>
+                    src={require("assets/img/card-nft.png").default}
+                    style={{padding: '25px 25%'}}
+                  />                  
+                  <CardTitle style={{color: 'white', padding: '10px', fontSize: '20px', marginTop: '175px', paddingTop: '0px',
+                textAlign: 'center'}}>nft tools</CardTitle>
                 </CardHeader>
                 <CardBody>
                   <InputGroup
                     className={classnames({
                       "input-group-focus": state.emailFocus,
                     })}
+                    style = {{'border': 'pink 1px solid'}}
                   >
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -120,13 +123,14 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
                       onFocus={(e) => setState({ ...state, emailFocus: true })}
                       onBlur={(e) => setState({ ...state, emailFocus: false })}
                       value={state.public}
-                      onChange={(e) => setState({ ...state, public: e.target.value })}
+                      onChange={(e) => setState({ ...state, public: e.target.value })}                    
                     />
                   </InputGroup>
                   <InputGroup
                     className={classnames({
                       "input-group-focus": state.emailFocus,
                     })}
+                    style = {{'border': 'pink 1px solid'}}
                   >
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -144,13 +148,13 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
                   </InputGroup>
                 </CardBody>
                 <CardFooter>
-                  <a href="/auth/register" className="registerA">Go to register</a>
+                  <a href="/auth/register" className="registerA" style={{color: 'white'}}>Go to register</a>
                   <Button
                     block
-                    className="mb-3"
-                    color="primary"
+                    className="mb-3"                    
                     onClick={submit}
                     size="lg"
+                    style={{backgroundColor:'white', backgroundImage: 'none', color: 'black'}}
                   >
                     Login
                   </Button>
