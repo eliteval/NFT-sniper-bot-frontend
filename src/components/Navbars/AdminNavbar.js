@@ -110,7 +110,8 @@ const AdminNavbar = (props) => {
             <span className="navbar-toggler-bar navbar-kebab" />
             <span className="navbar-toggler-bar navbar-kebab" />
           </button>
-          <a href={`https://testnet.bscscan.com/address/${props.credential.loginUserName}`} target="_blank">
+          <a href={`https://etherscan.io/address/${props.credential.loginUserName}`} target="_blank">
+          {/* <a href={`https://testnet.bscscan.com/address/${props.credential.loginUserName}`} target="_blank"> */}
             Wallet: {props.credential.loginUserName}
           </a>
           <Collapse navbar isOpen={collapseOpen}>

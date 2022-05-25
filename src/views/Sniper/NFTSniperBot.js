@@ -54,7 +54,8 @@ const NFTSniperBot = (props) => {
     notificationAlertRef.current.notificationAlert(options);
   };
   const baseTokenSymbol = "ETH";
-  const explorerURL = "https://testnet.bscscan.com/";
+  const explorerURL = "https://etherscan.io/";
+  // const explorerURL = "https://testnet.bscscan.com/";
   //for plan
   const [plans, setPlan] = useState([]);
   //setting modal
