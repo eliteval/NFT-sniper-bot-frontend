@@ -203,7 +203,7 @@ const UniSwapOneToken = (props) => {
         <Card>
           <CardHeader>
             <CardTitle tag="h4">Snipper setting</CardTitle>
-            <Button className="btn1" onClick={() => showAddModal()}>+ Add snipping</Button>
+            <Button className="btn1" onClick={() => showAddModal()}>+ Add sniping</Button>
           </CardHeader>
           <CardBody>
             <Table responsive>

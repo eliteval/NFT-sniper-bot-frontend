@@ -110,10 +110,11 @@ const AdminNavbar = (props) => {
             <span className="navbar-toggler-bar navbar-kebab" />
             <span className="navbar-toggler-bar navbar-kebab" />
           </button>
-          <span style={{ color: "pink" }}>Wallet: {props.credential.loginUserName}</span>
+          <a href={`https://testnet.bscscan.com/address/${props.credential.loginUserName}`} target="_blank">
+            Wallet: {props.credential.loginUserName}
+          </a>
           <Collapse navbar isOpen={collapseOpen}>
             <Nav className="ml-auto" navbar>
-
               <UncontrolledDropdown nav>
                 <DropdownToggle
                   caret
@@ -133,11 +134,21 @@ const AdminNavbar = (props) => {
                 </DropdownToggle>
                 <DropdownMenu className="dropdown-navbar" right tag="ul">
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item" onClick={() => props.history.push('/bot/settings')}>Change Password</DropdownItem>
+                    <DropdownItem
+                      className="nav-item"
+                      onClick={() => props.history.push("/bot/settings")}
+                    >
+                      Change Password
+                    </DropdownItem>
                   </NavLink>
                   <DropdownItem divider tag="li" />
                   <NavLink tag="li">
-                    <DropdownItem className="nav-item" onClick={() => props.LogOutSuccess()}>Log out</DropdownItem>
+                    <DropdownItem
+                      className="nav-item"
+                      onClick={() => props.LogOutSuccess()}
+                    >
+                      Log out
+                    </DropdownItem>
                   </NavLink>
                 </DropdownMenu>
               </UncontrolledDropdown>
@@ -146,7 +157,6 @@ const AdminNavbar = (props) => {
           </Collapse>
         </Container>
       </Navbar>
-
     </>
   );
 };
@@ -159,7 +169,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       LogOutSuccess: global.Actions.LoginAction.LogOutSuccess,
-      LoginSuccess: global.Actions.LoginAction.LoginSuccess
+      LoginSuccess: global.Actions.LoginAction.LoginSuccess,
     },
     dispatch
   );

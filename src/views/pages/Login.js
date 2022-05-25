@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { useHistory } from "react-router-dom";
 import NotificationAlert from "react-notification-alert";
-import './login.css';
+import "./login.css";
 // reactstrap components
 import {
   Button,
@@ -23,7 +23,7 @@ import {
 } from "reactstrap";
 
 const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
-  const [state, setState] = React.useState({ public: '', password:''});
+  const [state, setState] = React.useState({ public: "", password: "" });
   const history = useHistory();
   const { apiConfig, ApiCall } = global;
   const notificationAlertRef = React.useRef(null);
@@ -40,12 +40,12 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
     notificationAlertRef.current.notificationAlert(options);
   };
   const submit = async () => {
-    if(!state.public){
-      notify("Please input public key", 'danger');
+    if (!state.public) {
+      notify("Please input public key", "danger");
       return;
     }
-    if(!state.password){
-      notify("Please input password", 'danger');
+    if (!state.password) {
+      notify("Please input password", "danger");
       return;
     }
     try {
@@ -62,15 +62,13 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
       LoginSuccess(response.data);
     } catch (error) {
       if (error.response) {
-        notify(error.response.data.message, 'danger');
-      } 
-      else if (error.request) {
+        notify(error.response.data.message, "danger");
+      } else if (error.request) {
         // client never received a response, or request never left
-        notify("Request failed",'','danger');
+        notify("Request failed", "", "danger");
         // console.log(error.request)
-      }
-      else {
-        notify("Something went wrong",'','danger');
+      } else {
+        notify("Something went wrong", "", "danger");
       }
       LogOutSuccess();
     }
@@ -95,22 +93,35 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
         <Container>
           <Col className="ml-auto mr-auto" lg="4" md="6">
             <Form className="form">
-              <Card className="card-login card-white" style={{backgroundColor: '#131313'}}>
-                <CardHeader style={{paddingBottom: '10px'}}>
+              <Card
+                className="card-login card-white"
+                style={{ backgroundColor: "#131313" }}
+              >
+                <CardHeader style={{ paddingBottom: "10px" }}>
                   <img
                     alt="..."
                     src={require("assets/img/card-nft.png").default}
-                    style={{padding: '25px 25%'}}
-                  />                  
-                  <CardTitle style={{color: 'white', padding: '10px', fontSize: '20px', marginTop: '175px', paddingTop: '0px',
-                textAlign: 'center'}}>nft tools</CardTitle>
+                    style={{ padding: "25px 25%" }}
+                  />
+                  <CardTitle
+                    style={{
+                      color: "white",
+                      padding: "10px",
+                      fontSize: "20px",
+                      marginTop: "175px",
+                      paddingTop: "0px",
+                      textAlign: "center",
+                    }}
+                  >
+                    nft tools
+                  </CardTitle>
                 </CardHeader>
                 <CardBody>
                   <InputGroup
                     className={classnames({
                       "input-group-focus": state.emailFocus,
                     })}
-                    style = {{'border': 'pink 1px solid'}}
+                    style={{ border: "pink 1px solid" }}
                   >
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -123,14 +134,16 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
                       onFocus={(e) => setState({ ...state, emailFocus: true })}
                       onBlur={(e) => setState({ ...state, emailFocus: false })}
                       value={state.public}
-                      onChange={(e) => setState({ ...state, public: e.target.value })}                    
+                      onChange={(e) =>
+                        setState({ ...state, public: e.target.value })
+                      }
                     />
                   </InputGroup>
                   <InputGroup
                     className={classnames({
                       "input-group-focus": state.emailFocus,
                     })}
-                    style = {{'border': 'pink 1px solid'}}
+                    style={{ border: "pink 1px solid" }}
                   >
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -143,18 +156,30 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
                       onFocus={(e) => setState({ ...state, emailFocus: true })}
                       onBlur={(e) => setState({ ...state, emailFocus: false })}
                       value={state.password}
-                      onChange={(e) => setState({ ...state, password: e.target.value })}
+                      onChange={(e) =>
+                        setState({ ...state, password: e.target.value })
+                      }
                     />
                   </InputGroup>
                 </CardBody>
                 <CardFooter>
-                  <a href="/auth/register" className="registerA" style={{color: 'white'}}>Go to register</a>
+                  <a
+                    href="/auth/register"
+                    className="registerA"
+                    style={{ color: "white" }}
+                  >
+                    Go to register
+                  </a>
                   <Button
                     block
-                    className="mb-3"                    
+                    className="mb-3"
                     onClick={submit}
                     size="lg"
-                    style={{backgroundColor:'white', backgroundImage: 'none', color: 'black'}}
+                    style={{
+                      backgroundColor: "white",
+                      backgroundImage: "none",
+                      color: "black",
+                    }}
                   >
                     Login
                   </Button>
@@ -176,7 +201,7 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(
     {
       LogOutSuccess: global.Actions.LoginAction.LogOutSuccess,
-      LoginSuccess: global.Actions.LoginAction.LoginSuccess
+      LoginSuccess: global.Actions.LoginAction.LoginSuccess,
     },
     dispatch
   );

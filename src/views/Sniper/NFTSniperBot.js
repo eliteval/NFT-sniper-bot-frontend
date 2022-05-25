@@ -54,14 +54,15 @@ const NFTSniperBot = (props) => {
     notificationAlertRef.current.notificationAlert(options);
   };
   const baseTokenSymbol = "ETH";
-  const explorerURL = "https://bscscan.com/";
+  const explorerURL = "https://testnet.bscscan.com/";
   //for plan
   const [plans, setPlan] = useState([]);
   //setting modal
   const [modalAdd, setModalAdd] = useState(false);
   const [addData, setAddData] = useState({});
   const arrSniperTrigger = {
-    flipstate: "Snipe NFT Token by flipstate function",
+    flipstate: "Snipe NFT Token when flipstate function is called",
+    statuschange: "Snipe NFT Tokens when sale status is changed",
     idrange: "Snipe NFT Tokens with ID range",
   };
   const showAddModal = (data = false) => {
@@ -79,8 +80,9 @@ const NFTSniperBot = (props) => {
         extraWallet: "",
         tokenAmount: 1,
         sniperTrigger: "flipstate",
-        rangeStart: 0,
-        rangeEnd: 5,
+        saleStatus: '',
+        rangeStart: '',
+        rangeEnd: '',
       });
     setModalAdd(true);
   };
@@ -235,7 +237,7 @@ const NFTSniperBot = (props) => {
           <CardHeader>
             <CardTitle tag="h4">NFT Sniper setting</CardTitle>
             <Button className="btn1" onClick={() => showAddModal()}>
-              + Add snipping
+              + Add sniping plan
             </Button>
           </CardHeader>
           <CardBody>
@@ -244,12 +246,14 @@ const NFTSniperBot = (props) => {
                 <tr>
                   <th>NFT contract</th>
                   <th className="text-left">Trigger Type</th>
-                  <th className="text-left">Listen Function</th>
-                  <th className="text-left">Hexcode</th>
+                  <th className="text-left">Flipstate Function</th>
+                  <th className="text-left">Sale Status Variable</th>
                   <th className="text-left">ID range</th>
                   <th className="text-left">Mint Function</th>
                   <th className="text-left">NFT price</th>
                   <th className="text-left">minting Amount</th>
+                  <th className="text-left">Delay</th>
+                  <th className="text-left">Gas price</th>
                   <th className="text-left">Actions</th>
                 </tr>
               </thead>
@@ -259,7 +263,7 @@ const NFTSniperBot = (props) => {
                     <tr key={key}>
                       <td>
                         <a
-                          href={`${explorerURL}/token/${item.token}`}
+                          href={`${explorerURL}/address/${item.token}`}
                           target="_blank"
                         >
                           {item.token}
@@ -267,17 +271,19 @@ const NFTSniperBot = (props) => {
                       </td>
                       <td className="text-left">{item.sniperTrigger}</td>
                       <td className="text-left">
-                        {item.startFunction
-                          ? item.startFunction
-                          : "Router Liquidity"}
+                        {item.startFunction}
                       </td>
                       <td className="text-left">
-                        {item.funcRegex ? item.funcRegex : "0xf305d719"}
+                        {item.saleStatus}
                       </td>
-                      <td className="text-left">{item.rangeStart} ~ {item.rangeEnd}</td>
+                      <td className="text-left">
+                        {item.rangeStart} ~ {item.rangeEnd}
+                      </td>
                       <td className="text-left">{item.mintFunction}</td>
                       <td className="text-left">{item.eth}</td>
                       <td className="text-left">{item.tokenAmount}</td>
+                      <td className="text-left">{item.waitTime} {item.delayMethod}(s)</td>
+                      <td className="text-left">{item.gasPrice} Gwei</td>
                       <td className="text-left">
                         <Button
                           className="btn-link btn-icon"
@@ -424,6 +430,10 @@ const NFTSniperBot = (props) => {
                           label: arrSniperTrigger["flipstate"],
                         },
                         {
+                          value: "statuschange",
+                          label: arrSniperTrigger["statuschange"],
+                        },
+                        {
                           value: "idrange",
                           label: arrSniperTrigger["idrange"],
                         },
@@ -440,59 +450,87 @@ const NFTSniperBot = (props) => {
                     ></Select>
                   </FormGroup>
                 </Col>
-                <Col className="pr-md-1" md="12">
-                  <FormGroup>
-                    <label>
-                      Flipstate function for public sale( ex: startSale(),
-                      startSale(uint256, address) )
-                    </label>
-                    <Input
-                      type="text"
-                      value={addData.startFunction}
-                      onChange={(e) =>
-                        setAddData({
-                          ...addData,
-                          startFunction: e.target.value,
-                        })
-                      }
-                      readOnly={addData.sniperTrigger == "idrange"}
-                    />
-                  </FormGroup>
-                </Col>
+                {/* flipstate function */}
+                {addData.sniperTrigger == "flipstate" && (
+                  <Col className="pr-md-1" md="12">
+                    <FormGroup>
+                      <label>
+                        Flipstate function for public sale( ex: startSale(),
+                        startSale(uint256, address) )
+                      </label>
+                      <Input
+                        type="text"
+                        value={addData.startFunction}
+                        onChange={(e) =>
+                          setAddData({
+                            ...addData,
+                            startFunction: e.target.value,
+                          })
+                        }
+                      />
+                    </FormGroup>
+                  </Col>
+                )}
+
+                {/* statuschange */}
+                {addData.sniperTrigger == "statuschange" && (
+                  <Col className="pr-md-1" md="12">
+                    <FormGroup>
+                      <label>
+                        Name of variable for sale status( ex: saleIsStarted,
+                        saleIsActive )
+                      </label>
+                      <Input
+                        type="text"
+                        value={addData.saleStatus}
+                        onChange={(e) =>
+                          setAddData({
+                            ...addData,
+                            saleStatus: e.target.value,
+                          })
+                        }
+                      />
+                    </FormGroup>
+                  </Col>
+                )}
                 {/* ID range */}
-                <Col className="pr-md-1" md="12">
-                  <Row>
-                    <Col className="pr-md-1" md="6">
-                      <FormGroup>
-                        <label>TokenID range (from)</label>
-                        <Input
-                          type="number"
-                          value={addData.rangeStart}
-                          onChange={(e) =>
-                            setAddData({
-                              ...addData,
-                              rangeStart: e.target.value,
-                            })
-                          }
-                          readOnly={addData.sniperTrigger == "flipstate"}
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pr-md-1" md="6">
-                      <FormGroup>
-                        <label>TokenID range (to)</label>
-                        <Input
-                          type="number"
-                          value={addData.rangeEnd}
-                          onChange={(e) =>
-                            setAddData({ ...addData, rangeEnd: e.target.value })
-                          }
-                          readOnly={addData.sniperTrigger == "flipstate"}
-                        />
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </Col>
+                {addData.sniperTrigger == "idrange" && (
+                  <Col className="pr-md-1" md="12">
+                    <Row>
+                      <Col className="pr-md-1" md="6">
+                        <FormGroup>
+                          <label>TokenID range (from)</label>
+                          <Input
+                            type="number"
+                            value={addData.rangeStart}
+                            onChange={(e) =>
+                              setAddData({
+                                ...addData,
+                                rangeStart: e.target.value,
+                              })
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="pr-md-1" md="6">
+                        <FormGroup>
+                          <label>TokenID range (to)</label>
+                          <Input
+                            type="number"
+                            value={addData.rangeEnd}
+                            onChange={(e) =>
+                              setAddData({
+                                ...addData,
+                                rangeEnd: e.target.value,
+                              })
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </Col>
+                )}
+                {/* Mint function */}
                 <Col className="pr-md-1" md="12">
                   <FormGroup>
                     <label>Mint function name( ex: mint, mintNFT )</label>
@@ -555,13 +593,13 @@ const NFTSniperBot = (props) => {
                     </Col>
                     <Col className="pr-md-1" md="6">
                       <FormGroup>
-                        <label>time/block</label>
+                        <label>delay unit</label>
                         <Select
                           options={[
-                            {
-                              value: "block",
-                              label: "block",
-                            },
+                            // {
+                            //   value: "block",
+                            //   label: "block",
+                            // },
                             {
                               value: "second",
                               label: "second",

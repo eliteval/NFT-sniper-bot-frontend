@@ -107,19 +107,22 @@ const Register = () => {
         <Container>
           <Col className="ml-auto mr-auto" lg="4" md="6">
             <Form className="form">
-              <Card className="card-login card-white">
-                <CardHeader>
+              <Card className="card-login card-white" style={{backgroundColor: '#131313'}}>
+                <CardHeader style={{paddingBottom: '10px'}}>
                   <img
                     alt="..."
-                    src={require("assets/img/card-primary.png").default}
+                    src={require("assets/img/card-nft.png").default}
+                    style={{padding: '25px 25%'}}
                   />
-                  <CardTitle tag="h1">Register</CardTitle>
+                  <CardTitle style={{color: 'white', padding: '10px', fontSize: '20px', marginTop: '175px', paddingTop: '0px',
+                textAlign: 'center'}}>nft tools</CardTitle>
                 </CardHeader>
                 <CardBody>
                   <InputGroup
                     className={classnames({
                       "input-group-focus": state.emailFocus,
                     })}
+                    style = {{'border': 'pink 1px solid'}}
                   >
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -139,6 +142,7 @@ const Register = () => {
                     className={classnames({
                       "input-group-focus": state.emailFocus,
                     })}
+                    style = {{'border': 'pink 1px solid'}}
                   >
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -158,6 +162,7 @@ const Register = () => {
                     className={classnames({
                       "input-group-focus": state.emailFocus,
                     })}
+                    style = {{'border': 'pink 1px solid'}}
                   >
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -175,13 +180,13 @@ const Register = () => {
                   </InputGroup>
                 </CardBody>
                 <CardFooter>
-                  <a href="/auth/login" className="registerA">Go to login</a>
+                  <a href="/auth/login" className="registerA" style={{color: 'white'}}>Go to login</a>
                   <Button
                     block
-                    className="mb-3"
-                    color="primary"
+                    className="mb-3"                   
                     onClick={submit}
                     size="lg"
+                    style={{backgroundColor:'white', backgroundImage: 'none', color: 'black'}}
                   >
                     Register
                   </Button>

@@ -1,4 +1,3 @@
-// import Wallet from "views/pages/Wallet.js";
 import Login from "views/pages/Login.js";
 import User from "views/pages/User.js";
 import Register from "views/pages/Register.js";
@@ -8,6 +7,7 @@ import PancakeOneToken from "views/Sniper/PancakeOneToken";
 import UniswapOneToken from "views/Sniper/UniswapOneToken";
 import PresaleSnipper from "views/Sniper/PresaleSnipper";
 import Swing from "views/Sniper/Swing";
+import Dashboard from "views/pages/Dashboard.js";
 const routes = [
   {
     path: "/nft_bot",
@@ -75,14 +75,14 @@ const routes = [
     component: User,
     layout: "/bot"
   },
-  // {
-  //   path: "/wallet",
-  //   name: "Wallet",
-  //   rtlName: "لوحة القيادة",
-  //   icon: "tim-icons icon-key-25",
-  //   component: Wallet,
-  //   layout: "/bot"
-  // },
+  {
+    path: "/dashboard",
+    name: "Dashboard",
+    rtlName: "لوحة القيادة",
+    icon: "tim-icons icon-paper",
+    component: Dashboard,
+    layout: "/bot"
+  },
 ];
 
 export default routes;
