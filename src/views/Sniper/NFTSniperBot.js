@@ -500,7 +500,7 @@ const NFTSniperBot = (props) => {
                     <Row>
                       <Col className="pr-md-1" md="6">
                         <FormGroup>
-                          <label>TokenID range (from)</label>
+                          <label>Token Number (from)</label>
                           <Input
                             type="number"
                             value={addData.rangeStart}
@@ -515,7 +515,7 @@ const NFTSniperBot = (props) => {
                       </Col>
                       <Col className="pr-md-1" md="6">
                         <FormGroup>
-                          <label>TokenID range (to)</label>
+                          <label>Token Number (to)</label>
                           <Input
                             type="number"
                             value={addData.rangeEnd}
