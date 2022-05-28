@@ -6,10 +6,12 @@ const apiConfig = {
   nft_addBot: { url: "/api/nft/addBot", method: "post" },
   nft_delBot: { url: "/api/nft/delBot", method: "post" },
   nft_readPlan: { url: "/api/nft/readPlan", method: "post" },
+  nft_readLog: { url: "/api/nft/readLog", method: "post" },
   nft_letSell: { url: "/api/nft/letSell", method: "post" },
   nft_letApprove: { url: "/api/nft/letApprove", method: "post" },
   nft_letDel: { url: "/api/nft/letDel", method: "post" },
   nft_readAllPlans: { url: "/api/nft/readAllPlans", method: "post" },
+  nft_readAllLogs: { url: "/api/nft/readAllLogs", method: "post" },
   //pancake
   pan_addBot: { url: "/api/pan/addBot", method: "post" },
   pan_delBot: { url: "/api/pan/delBot", method: "post" },

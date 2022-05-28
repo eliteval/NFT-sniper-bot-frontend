@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import ApiCall from "./shared/globalApiService";
 import Actions from "./store/actions/index";
 import apiConfig from "./shared/apiConfig";
+import shortenWallet from "./shared/utils.js";
 import AuthLayout from "layouts/Auth/Auth.js";
 import AdminLayout from "layouts/Admin/Admin.js";
 // import RTLLayout from "layouts/RTL/RTL.js";
@@ -31,6 +32,7 @@ const PrivateRoute = withRouter(
   })
 );
 global.ApiCall = ApiCall;
+global.shortenWallet = shortenWallet;
 global.Actions = Actions;
 global.apiConfig = apiConfig;
 ReactDOM.render(

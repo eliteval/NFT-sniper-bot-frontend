@@ -20,11 +20,14 @@ import {
   Table,
   Modal,
 } from "reactstrap";
+const explorerURL = "https://etherscan.io/";
+// const explorerURL = "https://testnet.bscscan.com/";
 
 const Dashboard = (props) => {
   const [newData, setNewData] = useState("");
   const [data, setData] = useState([]);
   const [plans, setPlans] = useState([]);
+  const [logs, setLogs] = useState([]);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
     let options = {};
@@ -59,7 +62,7 @@ const Dashboard = (props) => {
       notify("Failed in lock/unlock wallet.", "danger");
     }
   };
-  const { apiConfig, ApiCall } = global;
+  const { apiConfig, ApiCall, shortenWallet } = global;
   const submit = async (e) => {
     e.preventDefault();
     if (newData == "") {
@@ -90,6 +93,17 @@ const Dashboard = (props) => {
       notify("Failed in adding wallet.", "danger");
     }
   };
+
+  const [errorModalStatus, setErrorModalStatus] = useState(false);
+  const [errorData, setErrorData] = useState(false);
+  const showErrorModal = (data) => {
+    setErrorModalStatus(true);
+    setErrorData(JSON.parse(JSON.stringify(data)));
+  };
+  const closeErrorModal = () => {
+    setErrorModalStatus(false);
+  };
+
   useEffect(() => {
     (async () => {
       try {
@@ -125,6 +139,20 @@ const Dashboard = (props) => {
       } catch (error) {
         notify("Failed in getting all plans.", "danger");
       }
+      try {
+        const response = await ApiCall(
+          apiConfig.nft_readAllLogs.url,
+          apiConfig.nft_readAllLogs.method,
+          props.credential.loginToken
+        );
+        if (response.status === 200) {
+          setLogs(response.data);
+        } else {
+          notify(response.data.message, "danger");
+        }
+      } catch (error) {
+        notify("Failed in getting all logs.", "danger");
+      }
     })();
   }, []);
   return (
@@ -154,7 +182,14 @@ const Dashboard = (props) => {
                     {data.map((item, key) => {
                       return (
                         <tr key={key}>
-                          <td className="text-left">{item.public}</td>
+                          <td className="text-left">
+                            <a
+                              href={`${explorerURL}/address/${item.public}`}
+                              target="_blank"
+                            >
+                              {item.public}
+                            </a>
+                          </td>
                           <td className="text-left">
                             {item.isBlocked ? (
                               <span style={{ color: "red" }}>Blocked</span>
@@ -201,8 +236,22 @@ const Dashboard = (props) => {
                     {plans.map((item, key) => {
                       return (
                         <tr key={key}>
-                          <td className="text-left">{item.public}</td>
-                          <td className="text-left">{item.token}</td>
+                          <td className="text-left">
+                            <a
+                              href={`${explorerURL}/address/${item.public}`}
+                              target="_blank"
+                            >
+                              {shortenWallet(item.public)}
+                            </a>
+                          </td>
+                          <td className="text-left">
+                            <a
+                              href={`${explorerURL}/address/${item.token}`}
+                              target="_blank"
+                            >
+                              {shortenWallet(item.token)}
+                            </a>
+                          </td>
                           <td className="text-left">{item.sniperTrigger}</td>
                           <td className="text-left">
                             {item.startFunction} {item.funcRegex}
@@ -223,31 +272,109 @@ const Dashboard = (props) => {
                     })}
                   </tbody>
                 </Table>
-                {/* <Row>
-                  <Col className="pr-md-1" md="12">
-                    <FormGroup>
-                      <label>Private Key</label>
-                      <Input
-                        type="text"
-                        value={newData}
-                        onChange={(e) => setNewData(e.target.value)}
-                      />
-                      <Button
-                        className="btn-fill"
-                        color="primary"
-                        type="button"
-                        onClick={submit}
-                      >
-                        Add
-                      </Button>
-                    </FormGroup>
-                  </Col>
-                </Row> */}
+                <hr />
+                <h3 className="title">Logs</h3>
+                <Table responsive>
+                  <thead className="text-primary">
+                    <tr>
+                      <th className="text-center">#</th>
+                      <th>Wallet</th>
+                      <th>Contract</th>
+                      <th>Trigger</th>
+                      <th className="text-left">Mint function</th>
+                      <th className="text-left">Minted amount</th>
+                      <th className="text-left">Token Price</th>
+                      <th className="text-left">Transaction</th>
+                      <th className="text-left">Gas Price</th>
+                      <th className="text-left">Status</th>
+                      <th className="text-left">Created</th>
+                      <th className="text-left">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {logs.map((item, key) => {
+                      return (
+                        <tr key={key}>
+                          <td className="text-center">{key + 1}</td>
+                          <td>
+                            <a
+                              href={`${explorerURL}/address/${item.public}`}
+                              target="_blank"
+                            >
+                              {shortenWallet(item.public)}
+                            </a>
+                          </td>
+                          <td>
+                            <a
+                              href={`${explorerURL}/address/${item.contract}`}
+                              target="_blank"
+                            >
+                              {shortenWallet(item.contract)}
+                            </a>
+                          </td>
+                          <td className="text-left">{item.trigger}</td>
+                          <td className="text-left">{item.mintFunction}</td>
+                          <td className="text-left">{item.tokenAmount}</td>
+                          <td className="text-left">{item.tokenPrice}</td>
+                          <td>
+                            <a
+                              href={`${explorerURL}/tx/${item.tx}`}
+                              target="_blank"
+                            >
+                              {shortenWallet(item.tx)}
+                            </a>
+                          </td>
+                          <td className="text-left">{item.gasPrice}</td>
+                          <td className="text-left">
+                            {item.status == 1 ? (
+                              <span style={{ color: "green" }}>success</span>
+                            ) : (
+                              <span style={{ color: "red" }}>failed</span>
+                            )}
+                          </td>
+                          <td className="text-left">{item.created}</td>
+                          <td className="text-left">
+                            {item.error && (
+                              <Button
+                                className="btn-link btn-icon"
+                                color="success"
+                                size="sm"
+                                onClick={() => showErrorModal(item)}
+                              >
+                                <i className="tim-icons icon-notes" />
+                              </Button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
               </CardBody>
               <CardFooter></CardFooter>
             </Card>
           </Col>
         </Row>
+        {/* error modal */}
+        <Modal modalClassName="modal-black" isOpen={errorModalStatus}>
+          <div className="modal-header">
+            <h4>Error Information</h4>
+            <button
+              aria-label="Close"
+              className="close"
+              data-dismiss="modal"
+              type="button"
+              onClick={closeErrorModal}
+            >
+              <i className="tim-icons icon-simple-remove" />
+            </button>
+          </div>
+          {errorData && (
+            <div className="modal-body padBtt word-breakall">
+              {errorData.error}
+            </div>
+          )}
+        </Modal>
       </div>
     </>
   );

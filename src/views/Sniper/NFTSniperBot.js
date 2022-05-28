@@ -29,7 +29,7 @@ import NotificationAlert from "react-notification-alert";
 import snip_image from "assets/img/sniper1.jpg";
 const NFTSniperBot = (props) => {
   //necessary functions import
-  const { apiConfig, ApiCall } = global;
+  const { apiConfig, ApiCall, shortenWallet } = global;
   const [socket, setSocket] = useState("");
   const notificationAlertRef = React.useRef(null);
   const showNotify = async (
@@ -77,13 +77,13 @@ const NFTSniperBot = (props) => {
         gasLimit: 3000000, // number
         token: "",
         startFunction: "",
-        mintFunction: "",
+        mintFunction: "mint",
         extraWallet: "",
         tokenAmount: 1,
         sniperTrigger: "flipstate",
-        saleStatus: '',
-        rangeStart: '',
-        rangeEnd: '',
+        saleStatus: "",
+        rangeStart: "",
+        rangeEnd: "",
       });
     setModalAdd(true);
   };
@@ -193,7 +193,7 @@ const NFTSniperBot = (props) => {
       setSocket(io(apiConfig.endPoint));
     }
     //get plan and logs
-    async function readPlan() {
+    (async () => {
       try {
         const response = await ApiCall(
           apiConfig.nft_readPlan.url,
@@ -203,10 +203,22 @@ const NFTSniperBot = (props) => {
         );
         if (response.data.data) setPlan(response.data.data);
       } catch (error) {
-        // showNotify("Failed!",'','danger');
+        showNotify("Failed!", "", "danger");
       }
-    }
-    readPlan();
+    })();
+    (async () => {
+      try {
+        const response = await ApiCall(
+          apiConfig.nft_readLog.url,
+          apiConfig.nft_readLog.method,
+          props.credential.loginToken,
+          {}
+        );
+        if (response.data.data) setLogData(response.data.data);
+      } catch (error) {
+        showNotify("Failed!", "", "danger");
+      }
+    })();
   }, [props.credential.loginToken]);
   //function with socket
   useEffect(() => {
@@ -215,7 +227,8 @@ const NFTSniperBot = (props) => {
       socket.on("connect", () => {
         // when connection started
         console.log("connect");
-        socket.on("nft:one:newPlan", (data) => {
+        socket.on("nftsniper:planlist", (data) => {
+          console.log(data);
           setPlan(data.filter((x) => x.owner === publicKey));
         });
         socket.on("nft:one:logStatus", (data) => {
@@ -227,6 +240,16 @@ const NFTSniperBot = (props) => {
       if (socket) socket.disconnect();
     };
   }, [socket]);
+
+  useEffect(() => {
+    console.log("detected");
+    if (addData.sniperTrigger == "idrange") {
+      setAddData({
+        ...addData,
+        tokenAmount: addData.rangeEnd - addData.rangeStart + 1,
+      });
+    }
+  }, [addData.sniperTrigger, addData.rangeStart, addData.rangeEnd]);
   return (
     <>
       <div className="rna-container">
@@ -271,19 +294,17 @@ const NFTSniperBot = (props) => {
                         </a>
                       </td>
                       <td className="text-left">{item.sniperTrigger}</td>
-                      <td className="text-left">
-                        {item.startFunction}
-                      </td>
-                      <td className="text-left">
-                        {item.saleStatus}
-                      </td>
+                      <td className="text-left">{item.startFunction}</td>
+                      <td className="text-left">{item.saleStatus}</td>
                       <td className="text-left">
                         {item.rangeStart} ~ {item.rangeEnd}
                       </td>
                       <td className="text-left">{item.mintFunction}</td>
                       <td className="text-left">{item.eth}</td>
                       <td className="text-left">{item.tokenAmount}</td>
-                      <td className="text-left">{item.waitTime} {item.delayMethod}(s)</td>
+                      <td className="text-left">
+                        {item.waitTime} {item.delayMethod}(s)
+                      </td>
                       <td className="text-left">{item.gasPrice} Gwei</td>
                       <td className="text-left">
                         <Button
@@ -322,37 +343,51 @@ const NFTSniperBot = (props) => {
               <thead className="text-primary">
                 <tr>
                   <th className="text-center">#</th>
-                  <th>Token</th>
-                  <th className="text-left">
-                    Current Price({baseTokenSymbol})
-                  </th>
+                  <th>Contract</th>
+                  <th className="text-left">Trigger</th>
+                  <th className="text-left">Mint function</th>
+                  <th className="text-left">Minted amount</th>
+                  <th className="text-left">Token Price</th>
+                  <th className="text-left">Transaction</th>
+                  <th className="text-left">Gas Price</th>
                   <th className="text-left">Status</th>
-                  <th className="text-left">StatusAt</th>
-                  <th className="text-left">Actions</th>
+                  <th className="text-left">Created</th>
+                  <th className="text-left">Action</th>
                 </tr>
               </thead>
               <tbody>
                 {logData.map((item, key) => {
                   return (
                     <tr key={key}>
-                      <td className="text-center">
-                        <div className="photo">
-                          <img
-                            alt="..."
-                            src={require("assets/img/bitcoin.png").default}
-                          />
-                        </div>
-                      </td>
+                      <td className="text-center">{key + 1}</td>
                       <td>
                         <a
-                          href={`${explorerURL}/token/${item.token}`}
+                          href={`${explorerURL}/address/${item.contract}`}
                           target="_blank"
                         >
-                          {item.token}
+                          {item.contract}
                         </a>
                       </td>
-                      <td className="text-left">{item.currentPrice}</td>
-                      <td className="text-left">{item.txStatus}</td>
+                      <td className="text-left">{item.trigger}</td>
+                      <td className="text-left">{item.mintFunction}</td>
+                      <td className="text-left">{item.tokenAmount}</td>
+                      <td className="text-left">{item.tokenPrice}</td>
+                      <td>
+                        <a
+                          href={`${explorerURL}/tx/${item.tx}`}
+                          target="_blank"
+                        >
+                          {item.tx}
+                        </a>
+                      </td>
+                      <td className="text-left">{item.gasPrice}</td>
+                      <td className="text-left">
+                        {item.status == 1 ? (
+                          <span style={{ color: "green" }}>success</span>
+                        ) : (
+                          <span style={{ color: "red" }}>failed</span>
+                        )}
+                      </td>
                       <td className="text-left">{item.created}</td>
                       <td className="text-left">
                         {item.error && (
@@ -365,7 +400,7 @@ const NFTSniperBot = (props) => {
                             <i className="tim-icons icon-notes" />
                           </Button>
                         )}
-                        <Button
+                        {/* <Button
                           className="btn-link btn-icon"
                           color="success"
                           size="sm"
@@ -381,7 +416,7 @@ const NFTSniperBot = (props) => {
                           title="Delete"
                         >
                           <i className="tim-icons icon-simple-remove" />
-                        </Button>
+                        </Button> */}
                       </td>
                     </tr>
                   );
@@ -500,7 +535,7 @@ const NFTSniperBot = (props) => {
                     <Row>
                       <Col className="pr-md-1" md="6">
                         <FormGroup>
-                          <label>Token Number (from)</label>
+                          <label>Mint Token Number Range</label>
                           <Input
                             type="number"
                             value={addData.rangeStart}
@@ -515,7 +550,10 @@ const NFTSniperBot = (props) => {
                       </Col>
                       <Col className="pr-md-1" md="6">
                         <FormGroup>
-                          <label>Token Number (to)</label>
+                          <label>
+                            (from #{addData.rangeStart} token to #
+                            {addData.rangeEnd} token)
+                          </label>
                           <Input
                             type="number"
                             value={addData.rangeEnd}
@@ -549,8 +587,9 @@ const NFTSniperBot = (props) => {
                     <Col className="pr-md-1" md="12">
                       <FormGroup>
                         <label>
-                          NFT amount to mint.(Check in max tax amount in
-                          contract.)
+                          Minting {addData.tokenAmount} token(s) when call "
+                          {addData.mintFunction}" function.(Check max mint
+                          amount in contract.)
                         </label>
                         <Input
                           type="number"
@@ -561,12 +600,15 @@ const NFTSniperBot = (props) => {
                               tokenAmount: e.target.value,
                             })
                           }
+                          readOnly={addData.sniperTrigger == "idrange"}
                         />
                       </FormGroup>
                     </Col>
                     <Col className="pr-md-1" md="12">
                       <FormGroup>
-                        <label>NFT token {baseTokenSymbol} price</label>
+                        <label>
+                          NFT token price = {addData.eth} {baseTokenSymbol}
+                        </label>
                         <Input
                           type="number"
                           value={addData.eth}
@@ -578,48 +620,57 @@ const NFTSniperBot = (props) => {
                     </Col>
                   </Row>
                 </Col>
-                <Col className="pr-md-1" md="12">
-                  <Row>
-                    <Col className="pr-md-1" md="6">
-                      <FormGroup>
-                        <label>delay</label>
-                        <Input
-                          type="number"
-                          value={addData.waitTime}
-                          onChange={(e) =>
-                            setAddData({ ...addData, waitTime: e.target.value })
-                          }
-                        />
-                      </FormGroup>
-                    </Col>
-                    <Col className="pr-md-1" md="6">
-                      <FormGroup>
-                        <label>delay unit</label>
-                        <Select
-                          options={[
-                            // {
-                            //   value: "block",
-                            //   label: "block",
-                            // },
-                            {
-                              value: "second",
-                              label: "second",
-                            },
-                          ]}
-                          className="react-select info"
-                          classNamePrefix="react-select"
-                          value={{
-                            value: addData.delayMethod,
-                            label: addData.delayMethod,
-                          }}
-                          onChange={(e) => {
-                            setAddData({ ...addData, delayMethod: e.value });
-                          }}
-                        ></Select>
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                </Col>
+                {/* Delay */}
+                {addData.sniperTrigger == "flipstate" && (
+                  <Col className="pr-md-1" md="12">
+                    <Row>
+                      <Col className="pr-md-1" md="6">
+                        <FormGroup>
+                          <label>
+                            Delay {addData.waitTime} {addData.delayMethod}(s)
+                            after "{addData.startFunction}" function is called
+                          </label>
+                          <Input
+                            type="number"
+                            value={addData.waitTime}
+                            onChange={(e) =>
+                              setAddData({
+                                ...addData,
+                                waitTime: e.target.value,
+                              })
+                            }
+                          />
+                        </FormGroup>
+                      </Col>
+                      <Col className="pr-md-1" md="6">
+                        <FormGroup>
+                          <label>delay unit</label>
+                          <Select
+                            options={[
+                              // {
+                              //   value: "block",
+                              //   label: "block",
+                              // },
+                              {
+                                value: "second",
+                                label: "second",
+                              },
+                            ]}
+                            className="react-select info"
+                            classNamePrefix="react-select"
+                            value={{
+                              value: addData.delayMethod,
+                              label: addData.delayMethod,
+                            }}
+                            onChange={(e) => {
+                              setAddData({ ...addData, delayMethod: e.value });
+                            }}
+                          ></Select>
+                        </FormGroup>
+                      </Col>
+                    </Row>
+                  </Col>
+                )}
                 <Col className="pr-md-1" md="12">
                   <Row>
                     <Col className="pr-md-1" md="6">
