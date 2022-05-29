@@ -16,6 +16,7 @@
 */
 /*eslint-disable*/
 import React from "react";
+import { connect } from "react-redux";
 import { NavLink, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 // javascript plugin used to create scrollbars on windows
@@ -82,7 +83,10 @@ const Sidebar = (props) => {
   const createLinks = (routes) => {
     const { rtlActive } = props;
     return routes.map((prop, key) => {
-      if (prop.redirect || prop.layout!="/bot") {
+      if (prop.forAdmin && !props.credential.isAdmin) {
+        return null;
+      }
+      if (prop.redirect || prop.layout != "/bot") {
         return null;
       }
       if (prop.collapse) {
@@ -245,4 +249,8 @@ Sidebar.propTypes = {
   closeSidebar: PropTypes.func,
 };
 
-export default Sidebar;
+const mapStateToProps = (state) => {
+  const { LoginReducer } = state;
+  return { credential: LoginReducer };
+};
+export default connect(mapStateToProps)(Sidebar);

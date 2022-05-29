@@ -77,11 +77,12 @@ const routes = [
   },
   {
     path: "/dashboard",
-    name: "Dashboard",
+    name: "Adminpanel",
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-paper",
     component: Dashboard,
-    layout: "/bot"
+    layout: "/bot",
+    forAdmin: true
   },
 ];
 

@@ -195,7 +195,7 @@ const Admin = (props) => {
         />
         <Switch>
           {getRoutes(routes)}
-          <Redirect from="*" to="/bot/uniswap_one" />
+          <Redirect from="*" to="/bot/nft_bot" />
         </Switch>
         {
           // we don't want the Footer to be rendered on full screen maps page
