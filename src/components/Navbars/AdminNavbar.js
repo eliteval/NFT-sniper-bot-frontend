@@ -115,7 +115,7 @@ const AdminNavbar = (props) => {
             target="_blank"
           >
             {/* <a href={`https://testnet.bscscan.com/address/${props.credential.loginUserName}`} target="_blank"> */}
-            Wallet: {props.credential.loginUserName}
+            Your Wallet: {props.credential.loginUserName}
           </a>
           <Collapse navbar isOpen={collapseOpen}>
             <Nav className="ml-auto" navbar>

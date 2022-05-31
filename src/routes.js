@@ -8,14 +8,34 @@ import UniswapOneToken from "views/Sniper/UniswapOneToken";
 import PresaleSnipper from "views/Sniper/PresaleSnipper";
 import Swing from "views/Sniper/Swing";
 import Dashboard from "views/pages/Dashboard.js";
+import Analysis from "views/pages/Analysis.js";
+import ContractInfo from "views/pages/ContractInfo.js";
 const routes = [
   {
-    path: "/nft_bot",
+    path: "/analysis",
+    name: "NFT Analysis",
+    rtlName: "",
+    icon: "tim-icons icon-chart-bar-32",
+    component: Analysis,
+    layout: "/bot",
+  },
+  {
+    path: "/contract/:address",
+    name: "Contract Information",
+    rtlName: "",
+    icon: "tim-icons icon-chart-bar-32",
+    component: ContractInfo,
+    layout: "/bot",
+    hidden: true, //use when need to hide item in sidebar
+  },
+  {
+    path: "/nft_bot/:address?",
+    realPath: "/nft_bot", //use when react-route path is different from sidebar menu item link
     name: "NFT Sniper Bots",
     rtlName: "",
     icon: "tim-icons icon-spaceship",
     component: NFTSniperBot,
-    layout: "/bot"
+    layout: "/bot",
   },
   // {
   //   path: "/pancake_one",
@@ -73,7 +93,7 @@ const routes = [
     rtlName: "لوحة القيادة",
     icon: "tim-icons icon-key-25",
     component: User,
-    layout: "/bot"
+    layout: "/bot",
   },
   {
     path: "/dashboard",
@@ -82,7 +102,7 @@ const routes = [
     icon: "tim-icons icon-paper",
     component: Dashboard,
     layout: "/bot",
-    forAdmin: true
+    forAdmin: true, //use when item is for admin
   },
 ];
 

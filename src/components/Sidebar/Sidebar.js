@@ -83,6 +83,9 @@ const Sidebar = (props) => {
   const createLinks = (routes) => {
     const { rtlActive } = props;
     return routes.map((prop, key) => {
+      if (prop.hidden) {
+        return null;
+      }
       if (prop.forAdmin && !props.credential.isAdmin) {
         return null;
       }
@@ -132,6 +135,7 @@ const Sidebar = (props) => {
           </li>
         );
       }
+      prop.path = prop.realPath ? prop.realPath : prop.path;
       return (
         <li className={activeRoute(prop.path)} key={key}>
           <NavLink

@@ -37,6 +37,9 @@ const apiConfig = {
   //wallets
   getWallet: { url: "/api/wallet/read", method: "post" },
   lockWallet: { url: "/api/wallet/lock", method: "post" },
+  //icy
+  getTrendingCollections: { url: "/api/icy/getTrendingCollections", method: "post" },
+  getContractInfo: { url: "/api/icy/getContractInfo", method: "post" },
 };
 
 export default apiConfig;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { useParams } from "react-router-dom";
 // reactstrap components
 import {
   Button,
@@ -28,6 +28,7 @@ import "./sniper.css";
 import NotificationAlert from "react-notification-alert";
 import snip_image from "assets/img/sniper1.jpg";
 const NFTSniperBot = (props) => {
+  let { address } = useParams();
   //necessary functions import
   const { apiConfig, ApiCall, shortenWallet } = global;
   const [socket, setSocket] = useState("");
@@ -59,8 +60,8 @@ const NFTSniperBot = (props) => {
   //for plan
   const [plans, setPlan] = useState([]);
   //setting modal
-  const [modalAdd, setModalAdd] = useState(false);
-  const [addData, setAddData] = useState({});
+  const [modalAdd, setModalAdd] = useState(address);
+  const [addData, setAddData] = useState({ token: address });
   const arrSniperTrigger = {
     flipstate: "Snipe NFT Token when flipstate function is called",
     statuschange: "Snipe NFT Tokens when sale status is changed",

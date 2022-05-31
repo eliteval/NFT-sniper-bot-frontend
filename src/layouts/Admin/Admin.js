@@ -110,7 +110,7 @@ const Admin = (props) => {
     });
   };
   const getActiveRoute = (routes) => {
-    let activeRoute = "Bot management";
+    let activeRoute = "Batabata NFT Tools";
     for (let i = 0; i < routes.length; i++) {
       if (routes[i].collapse) {
         let collapseActiveRoute = getActiveRoute(routes[i].views);
@@ -180,7 +180,7 @@ const Admin = (props) => {
         activeColor={activeColor}
         logo={{
           outterLink: "",
-          text: "Bot Management",
+          text: "Batabata NFT Tools",
           imgSrc: logo,
         }}
         closeSidebar={closeSidebar}
@@ -190,7 +190,7 @@ const Admin = (props) => {
           {...props}
           handleMiniClick={handleMiniClick}
           brandText={getActiveRoute(routes)}
-          sidebarOpened={sidebarOpened} 
+          sidebarOpened={sidebarOpened}
           toggleSidebar={toggleSidebar}
         />
         <Switch>
