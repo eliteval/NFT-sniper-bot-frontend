@@ -10,6 +10,7 @@ import Swing from "views/Sniper/Swing";
 import Dashboard from "views/pages/Dashboard.js";
 import Analysis from "views/pages/Analysis.js";
 import ContractInfo from "views/pages/ContractInfo.js";
+import Search from "views/pages/Search.js";
 const routes = [
   {
     path: "/analysis",
@@ -18,6 +19,15 @@ const routes = [
     icon: "tim-icons icon-chart-bar-32",
     component: Analysis,
     layout: "/bot",
+  },
+  {
+    path: "/search",
+    name: "Search Contract",
+    rtlName: "",
+    icon: "tim-icons icon-chart-bar-32",
+    component: Search,
+    layout: "/bot",
+    hidden: true, //use when need to hide item in sidebar
   },
   {
     path: "/contract/:address",

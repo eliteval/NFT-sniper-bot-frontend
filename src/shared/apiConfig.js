@@ -12,6 +12,7 @@ const apiConfig = {
   nft_letDel: { url: "/api/nft/letDel", method: "post" },
   nft_readAllPlans: { url: "/api/nft/readAllPlans", method: "post" },
   nft_readAllLogs: { url: "/api/nft/readAllLogs", method: "post" },
+  nft_getContractInfo: { url: "/api/nft/getContractInfo", method: "post" },
   //pancake
   pan_addBot: { url: "/api/pan/addBot", method: "post" },
   pan_delBot: { url: "/api/pan/delBot", method: "post" },
@@ -40,6 +41,7 @@ const apiConfig = {
   //icy
   getTrendingCollections: { url: "/api/icy/getTrendingCollections", method: "post" },
   getContractInfo: { url: "/api/icy/getContractInfo", method: "post" },
+  searchContracts: { url: "/api/icy/searchContracts", method: "post" },
 };
 
 export default apiConfig;

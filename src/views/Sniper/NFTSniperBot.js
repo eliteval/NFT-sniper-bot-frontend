@@ -178,6 +178,30 @@ const NFTSniperBot = (props) => {
       else showNotify("Something went wrong", "", "danger");
     }
   };
+  const [loadinginfo, setLoadinginfo] = useState(false);
+  const getContractInfo = async (address) => {
+    var data = {
+      address: address,
+    };
+    setLoadinginfo(true);
+    try {
+      const response = await ApiCall(
+        apiConfig.nft_getContractInfo.url,
+        apiConfig.nft_getContractInfo.method,
+        props.credential.loginToken,
+        data
+      );
+      if (response.data)
+        alert(
+          `address: ${address}\nname: ${response.data.name} \nsymbol: ${response.data.symbol} \ntotalSupply: ${response.data.totalSupply} `
+        );
+    } catch (error) {
+      if (error.response) showNotify(error.response.data.message, "", "danger");
+      else if (error.request) showNotify("Request failed", "", "danger");
+      else showNotify("Something went wrong", "", "danger");
+    }
+    setLoadinginfo(false);
+  };
 
   //init
   useEffect(() => {
@@ -221,6 +245,7 @@ const NFTSniperBot = (props) => {
       }
     })();
   }, [props.credential.loginToken]);
+
   //function with socket
   useEffect(() => {
     if (socket) {
@@ -251,6 +276,7 @@ const NFTSniperBot = (props) => {
       });
     }
   }, [addData.sniperTrigger, addData.rangeStart, addData.rangeEnd]);
+
   return (
     <>
       <div className="rna-container">
@@ -447,13 +473,25 @@ const NFTSniperBot = (props) => {
               <Row>
                 <Col className="pr-md-1" md="12">
                   <FormGroup>
-                    <label>NFT Contract address</label>
+                    <label>NFT Contract address&nbsp;&nbsp;</label>
+                    <span
+                      style={{
+                        backgroundColor: "teal",
+                        color: "white",
+                        padding: "3px",
+                        border: "1px solid darkcyan",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => getContractInfo(addData.token)}
+                    >
+                      {loadinginfo ? "...loading" : "More"}
+                    </span>
                     <Input
                       type="text"
                       value={addData.token}
-                      onChange={(e) =>
-                        setAddData({ ...addData, token: e.target.value })
-                      }
+                      onChange={(e) => {
+                        setAddData({ ...addData, token: e.target.value });
+                      }}
                     />
                   </FormGroup>
                 </Col>
