@@ -20,12 +20,12 @@ import {
   Table,
   Modal,
 } from "reactstrap";
+import { useMoralisWeb3Api } from "react-moralis";
+
 const explorerURL = "https://etherscan.io/";
 // const explorerURL = "https://testnet.bscscan.com/";
 
-const Dashboard = (props) => {
-  const [newData, setNewData] = useState("");
-  const [data, setData] = useState([]);
+const Bots = (props) => {
   const [plans, setPlans] = useState([]);
   const [logs, setLogs] = useState([]);
   const notificationAlertRef = React.useRef(null);
@@ -40,59 +40,7 @@ const Dashboard = (props) => {
     };
     notificationAlertRef.current.notificationAlert(options);
   };
-  const lockWallet = async (key) => {
-    console.log(key);
-    try {
-      const payLoad = {
-        public: data[key].public,
-      };
-      const response = await ApiCall(
-        apiConfig.lockWallet.url,
-        apiConfig.lockWallet.method,
-        props.credential.loginToken,
-        payLoad
-      );
-      if (response.status === 200) {
-        notify(response.data.message, "success");
-        setData(response.data.data);
-      } else {
-        notify(response.data.error, "danger");
-      }
-    } catch (error) {
-      notify("Failed in lock/unlock wallet.", "danger");
-    }
-  };
   const { apiConfig, ApiCall, shortenWallet } = global;
-  const submit = async (e) => {
-    e.preventDefault();
-    if (newData == "") {
-      notify("Please input a new private key.", "danger");
-      return;
-    }
-    try {
-      const payLoad = {
-        newData,
-      };
-      const response = await ApiCall(
-        apiConfig.addWallet.url,
-        apiConfig.addWallet.method,
-        props.credential.loginToken,
-        payLoad
-      );
-      if (response.status === 200) {
-        notify("New Wallet added.", "success");
-        setData((ele) => {
-          ele.push(response.data);
-          return ele;
-        });
-        setNewData("");
-      } else {
-        notify(response.data.error, "danger");
-      }
-    } catch (error) {
-      notify("Failed in adding wallet.", "danger");
-    }
-  };
 
   const [errorModalStatus, setErrorModalStatus] = useState(false);
   const [errorData, setErrorData] = useState(false);
@@ -104,26 +52,32 @@ const Dashboard = (props) => {
     setErrorModalStatus(false);
   };
 
+  const Web3Api = useMoralisWeb3Api();
+
+  const fetchNFTTrades = async () => {
+    const options = {
+      address: "0x30a663f66fa4689b5482bc24df164ab6891b5bdb",
+      cursor: "",
+      // limit: "10",
+      chain: "eth",
+    };
+    const NFTTrades = await Web3Api.token.getNFTTrades(options);
+    console.log(NFTTrades);
+  };
+
+  const getAllTokenIds = async () => {
+    const options = {
+      address: "0x6c1cd3bce68653bba8ab28882d2d3d261113e3a8",
+      chain: "eth",
+    };
+    const NFTs = await Web3Api.token.getAllTokenIds(options);
+    console.log(NFTs);
+  };
+
   useEffect(() => {
     (async () => {
-      try {
-        const response = await ApiCall(
-          apiConfig.getWallet.url,
-          apiConfig.getWallet.method,
-          props.credential.loginToken
-        );
-        if (response.status === 200) {
-          setData((ele) => {
-            ele = response.data.data;
-            return ele;
-          });
-          setNewData("");
-        } else {
-          notify(response.data.message, "danger");
-        }
-      } catch (error) {
-        notify("Failed in getting wallets.", "danger");
-      }
+      fetchNFTTrades();
+      getAllTokenIds();
 
       try {
         const response = await ApiCall(
@@ -168,53 +122,6 @@ const Dashboard = (props) => {
                 {/* <h5 className="title">Manage Wallet</h5> */}
               </CardHeader>
               <CardBody>
-                <h3 className="title">Wallets</h3>
-                <Table responsive>
-                  <thead className="text-primary">
-                    <tr>
-                      <th className="text-left">Public Key</th>
-                      <th className="text-left">Blocked</th>
-                      <th className="text-left">Created</th>
-                      <th className="text-left">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.map((item, key) => {
-                      return (
-                        <tr key={key}>
-                          <td className="text-left">
-                            <a
-                              href={`${explorerURL}/address/${item.public}`}
-                              target="_blank"
-                            >
-                              {item.public}
-                            </a>
-                          </td>
-                          <td className="text-left">
-                            {item.isBlocked ? (
-                              <span style={{ color: "red" }}>Blocked</span>
-                            ) : (
-                              "None"
-                            )}
-                          </td>
-                          <td className="text-left">{item.created}</td>
-                          <td className="text-left">
-                            <Button
-                              className="btn-link"
-                              color="danger"
-                              size="sm"
-                              onClick={async () => lockWallet(key)}
-                              title="lock/unlock"
-                            >
-                              <i className="tim-icons icon-lock-circle" />
-                            </Button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </Table>
-                <hr />
                 <h3 className="title">Plans</h3>
                 <Table responsive>
                   <thead className="text-primary">
@@ -385,4 +292,4 @@ const mapStateToProps = (state) => {
   return { credential: LoginReducer };
 };
 
-export default connect(mapStateToProps)(Dashboard);
+export default connect(mapStateToProps)(Bots);

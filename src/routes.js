@@ -1,17 +1,41 @@
 import Login from "views/pages/Login.js";
 import User from "views/pages/User.js";
 import Register from "views/pages/Register.js";
-// import Buttons from "views/components/Buttons";
 import NFTSniperBot from "views/Sniper/NFTSniperBot";
+
+import Analysis from "views/pages/analytic/Analysis";
+import ContractInfo from "views/pages/analytic/ContractInfo";
+import Search from "views/pages/analytic/Search";
 import PancakeOneToken from "views/Sniper/PancakeOneToken";
 import UniswapOneToken from "views/Sniper/UniswapOneToken";
 import PresaleSnipper from "views/Sniper/PresaleSnipper";
 import Swing from "views/Sniper/Swing";
-import Dashboard from "views/pages/Dashboard.js";
-import Analysis from "views/pages/Analysis.js";
-import ContractInfo from "views/pages/ContractInfo.js";
-import Search from "views/pages/Search.js";
+import Authorization from "views/pages/admin/Authorization";
+import Bots from "views/pages/admin/Bots";
+import Wallets from "views/pages/admin/Wallets";
+import Setting from "views/pages/admin/Setting";
+
 const routes = [
+  {
+    path: "/login",
+    name: "Login",
+    rtlName: "هعذاتسجيل الدخول",
+    mini: "L",
+    rtlMini: "هعذا",
+    component: Login,
+    layout: "/auth",
+    hidden: true,
+  },
+  {
+    path: "/register",
+    name: "Register",
+    rtlName: "هعذاتسجيل الدخول",
+    mini: "L",
+    rtlMini: "هعذا",
+    component: Register,
+    layout: "/auth",
+    hidden: true,
+  },
   {
     path: "/analysis",
     name: "NFT Analysis",
@@ -19,6 +43,7 @@ const routes = [
     icon: "tim-icons icon-chart-bar-32",
     component: Analysis,
     layout: "/bot",
+    blockAT: true, //use when admin blocks this tab
   },
   {
     path: "/search",
@@ -79,24 +104,7 @@ const routes = [
   //   component: Swing,
   //   layout: "/bot"
   // },
-  {
-    path: "/login",
-    name: "Login",
-    rtlName: "هعذاتسجيل الدخول",
-    mini: "L",
-    rtlMini: "هعذا",
-    component: Login,
-    layout: "/auth",
-  },
-  {
-    path: "/register",
-    name: "Register",
-    rtlName: "هعذاتسجيل الدخول",
-    mini: "L",
-    rtlMini: "هعذا",
-    component: Register,
-    layout: "/auth",
-  },
+
   {
     path: "/settings",
     name: "Account Settings",
@@ -106,13 +114,46 @@ const routes = [
     layout: "/bot",
   },
   {
-    path: "/dashboard",
-    name: "Adminpanel",
-    rtlName: "لوحة القيادة",
+    collapse: true,
+    name: "Admin Panel",
+    rtlName: "صفحات",
     icon: "tim-icons icon-paper",
-    component: Dashboard,
-    layout: "/bot",
-    forAdmin: true, //use when item is for admin
+    state: "adminCollapse",
+    isManager: true, //use when item is for admin
+    views: [
+      {
+        path: "/admin/wallets",
+        name: "Wallets",
+        rtlName: "لوحة القيادة",
+        mini: "W",
+        component: Wallets,
+        layout: "/bot",
+      },
+      {
+        path: "/admin/bots",
+        name: "Bots",
+        rtlName: "لوحة القيادة",
+        mini: "B",
+        component: Bots,
+        layout: "/bot",
+      },
+      {
+        path: "/admin/autorization",
+        name: "Authorization",
+        rtlName: "لوحة القيادة",
+        mini: "A",
+        component: Authorization,
+        layout: "/bot",
+      },
+      {
+        path: "/admin/settings",
+        name: "Settings",
+        rtlName: "لوحة القيادة",
+        mini: "S",
+        component: Setting,
+        layout: "/bot",
+      },
+    ],
   },
 ];
 

@@ -22,8 +22,9 @@ import {
 } from "reactstrap";
 const explorerURL = "https://etherscan.io/";
 
-const Analysis = (props) => {
-  const [trending_collections, setTrendginCollections] = useState([]);
+const Search = (props) => {
+  const [searched_collections, setSearchedCollections] = useState([]);
+  const [query, setQuery] = useState("");
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
     let options = {};
@@ -47,28 +48,31 @@ const Analysis = (props) => {
   const closeErrorModal = () => {
     setErrorModalStatus(false);
   };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await ApiCall(
-          apiConfig.getTrendingCollections.url,
-          apiConfig.getTrendingCollections.method,
-          props.credential.loginToken
-        );
-        if (response.status === 200) {
-          setTrendginCollections((ele) => {
-            ele = response.data.data;
-            return ele;
-          });
-        } else {
-          notify(response.data.message, "danger");
-        }
-      } catch (error) {
-        notify("Failed in getting wallets.", "danger");
+  const searchContract = async (keyword) => {
+    try {
+      var payLoad = { query: keyword };
+      const response = await ApiCall(
+        apiConfig.searchContracts.url,
+        apiConfig.searchContracts.method,
+        props.credential.loginToken,
+        payLoad
+      );
+      if (response.status === 200) {
+        setSearchedCollections((ele) => {
+          ele = response.data.data;
+          return ele;
+        });
+      } else {
+        notify(response.data.message, "danger");
       }
-    })();
-  }, []);
+    } catch (error) {
+      if (error.response) notify(error.response.data.message, "danger");
+      else if (error.request) notify("Request failed", "danger");
+      else notify("Something went wrong", "danger");
+    }
+  };
+
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -83,80 +87,63 @@ const Analysis = (props) => {
                 {/* <h5 className="title">Manage Wallet</h5> */}
               </CardHeader>
               <CardBody>
-                <div style={{ margin: "20px" }}>
-                  <span
-                    className="title"
-                    style={{ fontSize: "30px", color: "white" }}
-                  >
-                    Trending NFT collections
-                  </span>
-                  <a class="pull-right" href={"/bot/search/"}>
+                <h3>Search Collections</h3>
+                <Row>
+                  <Col md={5}>
+                    <Input
+                      type="text"
+                      placeholder="Search NFT contracts by name..."
+                      size={"lg"}
+                      style={{ padding: "3px" }}
+                      value={query}
+                      onChange={(e) => {
+                        setQuery(e.target.value);
+                      }}
+                    />
+                  </Col>
+                  <Col md={2}>
                     <Button
                       style={{ marginRight: "8px" }}
                       color="info"
-                      size="sm"
+                      size="md"
+                      onClick={() => searchContract(query)}
                     >
-                      Search Collections
+                      Search
                     </Button>
-                  </a>
-                </div>
+                  </Col>
+                </Row>
 
-                <Table responsive>
+                <Table responsive style={{ marginTop: "20px" }}>
                   <thead className="text-primary">
                     <tr>
                       <th className="text-left"></th>
-                      <th className="text-left">Name (Symbol)</th>
+                      <th className="text-left">Name</th>
+                      <th className="text-left">Symbol</th>
                       <th className="text-left">Address</th>
-                      <th className="text-left">
-                        Sales &nbsp;
-                        <span title="Sales for the last 1 hour.">
-                          <i class="tim-icons icon-wifi"></i>
-                        </span>
-                      </th>
-                      <th className="text-left">
-                        Sales Floor &nbsp;
-                        <span title="Lowest recent sale with outliers removed.">
-                          <i class="tim-icons icon-wifi"></i>
-                        </span>
-                      </th>
-                      <th className="text-left">
-                        AVERAGE &nbsp;
-                        <span title="Average sale price for the last 1 hour.">
-                          <i class="tim-icons icon-wifi"></i>
-                        </span>
-                      </th>
-                      <th className="text-left">
-                        Volume &nbsp;
-                        <span title="Total volume for the last 1 hour.">
-                          <i class="tim-icons icon-wifi"></i>
-                        </span>
-                      </th>
                       <th className="text-left">Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {trending_collections.map((item, key) => {
+                    {searched_collections.map((item, key) => {
                       return (
                         <tr key={key}>
                           <td className="text-left">
-                            <img src={item.unsafeOpenseaImageUrl} width={70} />
+                            <img
+                              src={item.node.unsafeOpenseaImageUrl}
+                              width={50}
+                            />
                           </td>
+                          <td className="text-left">{item.node.name}</td>
+                          <td className="text-left">{item.node.symbol}</td>
                           <td className="text-left">
-                            {item.name} ({item.symbol})
-                          </td>
-                          <td className="text-left">
-                            {item.address}
+                            {item.node.address}
                             <a
-                              href={`${explorerURL}/address/${item.address}`}
+                              href={`${explorerURL}/address/${item.node.address}`}
                               target={"_blank"}
                             >
                               &nbsp; <i className="tim-icons icon-link-72" />
                             </a>
                           </td>
-                          <td className="text-left">{item.totalSales}</td>
-                          <td className="text-left">{item.floor} </td>
-                          <td className="text-left">{item.average}</td>
-                          <td className="text-left">{item.volume} </td>
                           <td className="text-left">
                             <Button
                               style={{ marginRight: "8px" }}
@@ -164,12 +151,12 @@ const Analysis = (props) => {
                               size="sm"
                               onClick={() => {
                                 window.location.href =
-                                  "/bot/nft_bot/" + item.address;
+                                  "/bot/nft_bot/" + item.node.address;
                               }}
                             >
                               Snipe
                             </Button>
-                            <a href={"/bot/contract/" + item.address}>
+                            <a href={"/bot/contract/" + item.node.address}>
                               <Button
                                 style={{ marginRight: "8px" }}
                                 color="info"
@@ -219,4 +206,4 @@ const mapStateToProps = (state) => {
   return { credential: LoginReducer };
 };
 
-export default connect(mapStateToProps)(Analysis);
+export default connect(mapStateToProps)(Search);

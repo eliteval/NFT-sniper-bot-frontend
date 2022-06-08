@@ -38,8 +38,20 @@ const apiConfig = {
   //wallets
   getWallet: { url: "/api/wallet/read", method: "post" },
   lockWallet: { url: "/api/wallet/lock", method: "post" },
+  adminWallet: { url: "/api/wallet/admin", method: "post" },
+  //authorization
+  readAuthoriztion: { url: "/api/authorization/read", method: "post" },
+  addAuthoriztion: { url: "/api/authorization/add", method: "post" },
+  deleteAuthorization: { url: "/api/authorization/delete", method: "post" },
+  //setting
+  read_setting: { url: "/api/setting/read", method: "post" },
+  update_setting: { url: "/api/setting/update", method: "post" },
+  delete_setting: { url: "/api/setting/delete", method: "post" },
   //icy
-  getTrendingCollections: { url: "/api/icy/getTrendingCollections", method: "post" },
+  getTrendingCollections: {
+    url: "/api/icy/getTrendingCollections",
+    method: "post",
+  },
   getContractInfo: { url: "/api/icy/getContractInfo", method: "post" },
   searchContracts: { url: "/api/icy/searchContracts", method: "post" },
 };

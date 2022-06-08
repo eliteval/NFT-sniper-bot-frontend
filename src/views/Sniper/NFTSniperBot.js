@@ -60,7 +60,7 @@ const NFTSniperBot = (props) => {
   //for plan
   const [plans, setPlan] = useState([]);
   //setting modal
-  const [modalAdd, setModalAdd] = useState(address);
+  const [modalAdd, setModalAdd] = useState(address ? true : false);
   const [addData, setAddData] = useState({ token: address });
   const arrSniperTrigger = {
     flipstate: "Snipe NFT Token when flipstate function is called",
@@ -71,7 +71,7 @@ const NFTSniperBot = (props) => {
     if (data) setAddData(data);
     else
       setAddData({
-        waitTime: 10,
+        waitTime: 1,
         delayMethod: "second",
         eth: "0.3",
         gasPrice: 12, // gwei
@@ -220,28 +220,31 @@ const NFTSniperBot = (props) => {
     //get plan and logs
     (async () => {
       try {
-        const response = await ApiCall(
-          apiConfig.nft_readPlan.url,
-          apiConfig.nft_readPlan.method,
-          props.credential.loginToken,
-          {}
-        );
-        if (response.data.data) setPlan(response.data.data);
+        {
+          const response = await ApiCall(
+            apiConfig.nft_readPlan.url,
+            apiConfig.nft_readPlan.method,
+            props.credential.loginToken,
+            {}
+          );
+
+          if (response.data.data) setPlan(response.data.data);
+        }
+
+        {
+          const response = await ApiCall(
+            apiConfig.nft_readLog.url,
+            apiConfig.nft_readLog.method,
+            props.credential.loginToken,
+            {}
+          );
+          if (response.data.data) setLogData(response.data.data);
+        }
       } catch (error) {
-        showNotify("Failed!", "", "danger");
-      }
-    })();
-    (async () => {
-      try {
-        const response = await ApiCall(
-          apiConfig.nft_readLog.url,
-          apiConfig.nft_readLog.method,
-          props.credential.loginToken,
-          {}
-        );
-        if (response.data.data) setLogData(response.data.data);
-      } catch (error) {
-        showNotify("Failed!", "", "danger");
+        if (error.response)
+          showNotify(error.response.data.message, "", "danger");
+        else if (error.request) showNotify("Request failed", "", "danger");
+        else showNotify("Something went wrong", "", "danger");
       }
     })();
   }, [props.credential.loginToken]);

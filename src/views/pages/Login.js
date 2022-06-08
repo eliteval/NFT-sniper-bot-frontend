@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import classnames from "classnames";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -20,6 +20,8 @@ import {
   InputGroup,
   Container,
   Col,
+  FormGroup,
+  Label,
 } from "reactstrap";
 
 const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
@@ -46,6 +48,10 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
     }
     if (!state.password) {
       notify("Please input password", "danger");
+      return;
+    }
+    if (!checkTerms) {
+      notify("Please check the terms & conditions", "danger");
       return;
     }
     try {
@@ -84,6 +90,31 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
       history.push("/");
     }
   }, [credential]);
+
+  const [terms, setTerms] = useState(false);
+  const [checkTerms, setCheckTerms] = useState(false);
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await ApiCall(
+          apiConfig.read_setting.url,
+          apiConfig.read_setting.method,
+          ""
+        );
+        if (response.status === 200) {
+          response.data.data.map((item, key) => {
+            if (item.key == "terms") {
+              setTerms(item.value);
+            }
+          });
+        } else {
+          notify(response.data.message, "danger");
+        }
+      } catch (error) {
+        notify("Failed in getting wallets.", "danger");
+      }
+    })();
+  }, []);
   return (
     <>
       <div className="rna-container">
@@ -161,6 +192,19 @@ const Login = ({ credential, LoginSuccess, LogOutSuccess }) => {
                       }
                     />
                   </InputGroup>
+                  <FormGroup check className="mt-3">
+                    <Label check>
+                      <Input
+                        type="checkbox"
+                        checked={checkTerms}
+                        onChange={(e) => setCheckTerms(e.target.checked)}
+                      />
+                      <span className="form-check-sign" />
+                      <a href={terms} target="_blank">
+                        Terms & Conditions
+                      </a>
+                    </Label>
+                  </FormGroup>
                 </CardBody>
                 <CardFooter>
                   <a

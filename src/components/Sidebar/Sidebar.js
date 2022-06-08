@@ -83,13 +83,16 @@ const Sidebar = (props) => {
   const createLinks = (routes) => {
     const { rtlActive } = props;
     return routes.map((prop, key) => {
+      if (prop.redirect) {
+        return null;
+      }
       if (prop.hidden) {
         return null;
       }
-      if (prop.forAdmin && !props.credential.isAdmin) {
+      if (prop.isManager && !props.credential.isManager) {
         return null;
       }
-      if (prop.redirect || prop.layout != "/bot") {
+      if (prop.blockAT && props.credential.blockAT) {
         return null;
       }
       if (prop.collapse) {
@@ -111,7 +114,7 @@ const Sidebar = (props) => {
             >
               {prop.icon !== undefined ? (
                 <>
-                  {prop.icon}
+                  <i className={prop.icon} />
                   <p>
                     {rtlActive ? prop.rtlName : prop.name}
                     <b className="caret" />
@@ -137,7 +140,7 @@ const Sidebar = (props) => {
       }
       prop.path = prop.realPath ? prop.realPath : prop.path;
       return (
-        <li className={activeRoute(prop.path)} key={key}>
+        <li className={activeRoute(prop.layout + prop.path)} key={key}>
           <NavLink
             to={prop.layout + prop.path}
             activeClassName=""

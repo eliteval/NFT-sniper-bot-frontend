@@ -18,6 +18,8 @@ import "assets/css/nucleo-icons.css";
 import "react-notification-alert/dist/animate.css";
 import "assets/scss/black-dashboard-pro-react.scss?v=1.2.0";
 import "assets/demo/demo.css";
+import { MoralisProvider } from "react-moralis";
+
 const mapStateToProps = (state) => ({
   credential: state.LoginReducer,
 });
@@ -37,15 +39,17 @@ global.Actions = Actions;
 global.apiConfig = apiConfig;
 ReactDOM.render(
   <Provider store={storePersist.store}>
-    <PersistGate persistor={storePersist.persistor}>
-      <BrowserRouter>
-        <Switch>
-          <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
-          <PrivateRoute path="/bot" />
-          <Redirect from="/" to="/bot/nft_bot" />
-        </Switch>
-      </BrowserRouter>
-    </PersistGate>
+    <MoralisProvider serverUrl="https://ehc8jexzkct0.usemoralis.com:2053/server" appId="8v6Eym9LSfNhLO1kWg7HtsgporbJ3BeTQrAQdU42">
+      <PersistGate persistor={storePersist.persistor}>
+        <BrowserRouter>
+          <Switch>
+            <Route path="/auth" render={(props) => <AuthLayout {...props} />} />
+            <PrivateRoute path="/bot" />
+            <Redirect from="/" to="/bot/nft_bot" />
+          </Switch>
+        </BrowserRouter>
+      </PersistGate>
+    </MoralisProvider>
   </Provider>,
   document.getElementById("root")
 );

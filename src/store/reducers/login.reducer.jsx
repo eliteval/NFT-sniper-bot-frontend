@@ -1,13 +1,15 @@
 const INITIAL_STATE = {
   loginToken: "",
   loginUserName: "",
-  isAdmin: false,
+  isManager: false,
+  blockAT: false,
 };
 
 const LoginReducer = (state = INITIAL_STATE, action) => {
   let loginToken;
   let loginUserName;
-  let isAdmin;
+  let isManager;
+  let blockAT;
   
   let data;
   switch (action.type) {
@@ -15,12 +17,14 @@ const LoginReducer = (state = INITIAL_STATE, action) => {
       data = action.loginData;
       loginToken = data.token;
       loginUserName = data.userInfo.public;    
-      isAdmin = data.isAdmin;    
+      isManager = data.isManager;    
+      blockAT = data.blockAT;    
       return {
         ...state,
         loginToken,
         loginUserName,      
-        isAdmin 
+        isManager, 
+        blockAT,
       };
     
     case "LOGOUT_SUCCESS":
