@@ -24,9 +24,21 @@ import {
 
 const explorerURL = "https://etherscan.io/";
 // const explorerURL = "https://testnet.bscscan.com/";
+const arrPageSetting = [
+  {
+    key: "terms",
+    text: "Terms of Service Link",
+  },
+  {
+    key: "privacy",
+    text: "Privacy Policy Link",
+  },
+];
 
 const Setting = (props) => {
-  const [terms, setTerms] = useState(false);
+  const [terms, setTerms] = useState("");
+  const [privacy, setPrivacy] = useState("");
+  const [settings, setSettings] = useState([]);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
     let options = {};
@@ -53,18 +65,20 @@ const Setting = (props) => {
   };
 
   const [modalAdd, setModalAdd] = useState(false);
-  const [addData, setAddData] = useState("");
+  const [addData, setAddData] = useState({});
+
   const showAddModal = (data = false) => {
+    setAddData(data);
     setModalAdd(true);
   };
   const closeAddModal = () => {
     setModalAdd(false);
   };
 
-  const updateTerms = async () => {
+  const updateSetting = async () => {
     var data = {
-      key: "terms",
-      value: terms,
+      key: addData.key,
+      value: addData.value,
     };
     try {
       const response = await ApiCall(
@@ -73,7 +87,7 @@ const Setting = (props) => {
         props.credential.loginToken,
         data
       );
-      notify("done", "success");
+      setSettings(response.data.data)
     } catch (error) {
       if (error.response) notify(error.response.data.message, "danger");
       else if (error.request) notify("Request failed", "danger");
@@ -91,16 +105,12 @@ const Setting = (props) => {
           props.credential.loginToken
         );
         if (response.status === 200) {
-          response.data.data.map((item, key) => {
-            if (item.key == "terms") {
-              setTerms(item.value);
-            }
-          });
+          setSettings(response.data.data);
         } else {
           notify(response.data.message, "danger");
         }
       } catch (error) {
-        notify("Failed in getting wallets.", "danger");
+        notify("Failed", "danger");
       }
     })();
   }, []);
@@ -126,21 +136,36 @@ const Setting = (props) => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td className="text-left">Terms & Condition Link</td>
-                      <td className="text-left">{terms}</td>
-                      <td className="text-left">
-                        <Button
-                          className="btn-link"
-                          color="success"
-                          size="sm"
-                          onClick={() => showAddModal()}
-                          title="Edit"
-                        >
-                          <i className="tim-icons icon-bullet-list-67" />
-                        </Button>
-                      </td>
-                    </tr>
+                    {arrPageSetting.map((pageSetting) => {
+                      const setting = settings.find(
+                        (item) => item.key == pageSetting.key
+                      );
+                      return (
+                        <tr>
+                          <td className="text-left">{pageSetting.text}</td>
+                          <td className="text-left">
+                            {setting && setting.value}
+                          </td>
+                          <td className="text-left">
+                            <Button
+                              className="btn-link"
+                              color="success"
+                              size="sm"
+                              onClick={() =>
+                                showAddModal({
+                                  key: pageSetting.key,
+                                  text: pageSetting.text,
+                                  value: setting && setting.value,
+                                })
+                              }
+                              title="Edit"
+                            >
+                              <i className="tim-icons icon-bullet-list-67" />
+                            </Button>
+                          </td>
+                        </tr>
+                      );
+                    })}
                   </tbody>
                 </Table>
               </CardBody>
@@ -168,19 +193,19 @@ const Setting = (props) => {
             <Row>
               <Col className="pr-md-1" md="12">
                 <FormGroup>
-                  <label>Terms & Conditions Link</label>
+                  <label>{addData.text}</label>
                   <Input
                     type="text"
-                    value={terms}
+                    value={addData.value}
                     onChange={(e) => {
-                      setTerms(e.target.value);
+                      setAddData({ ...addData, value: e.target.value });
                     }}
                   />
                 </FormGroup>
               </Col>
 
               <Col className="pr-md-1" md="12">
-                <Button color="btn1" onClick={() => updateTerms()}>
+                <Button color="btn1" onClick={() => updateSetting()}>
                   Save
                 </Button>
               </Col>
