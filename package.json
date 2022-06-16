@@ -3,6 +3,7 @@
   "version": "1.1.0",
   "private": true,
   "dependencies": {
+    "apexcharts": "^3.35.3",
     "axios": "^0.24.0",
     "bootstrap": "4.5.3",
     "chart.js": "2.9.4",
@@ -16,6 +17,7 @@
     "perfect-scrollbar": "1.4.0",
     "prop-types": "15.7.2",
     "react": "^17.0.1",
+    "react-apexcharts": "^1.4.0",
     "react-big-calendar": "0.30.0",
     "react-bootstrap-sweetalert": "5.2.0",
     "react-bootstrap-wizard": "0.0.9",

@@ -264,7 +264,7 @@ const Wallets = (props) => {
                   </Col>
                   <Col className="col-md-3">
                     <h4 className="title">
-                      Block all user wallets for anyalytic tool
+                      Block all user wallets for analytic tool
                     </h4>
 
                     <div className="d-flex align-items-center">

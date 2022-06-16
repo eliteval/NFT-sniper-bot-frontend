@@ -20,15 +20,24 @@ import {
   Label,
   Table,
   Modal,
+  TabContent,
+  TabPane,
+  NavItem,
+  NavLink,
+  Nav,
 } from "reactstrap";
 import { add } from "react-big-calendar/lib/utils/dates";
 import { addSyntheticTrailingComment } from "typescript";
+import Trades from "views/components/ContractInfo/Trades";
+import Tokens from "views/components/ContractInfo/Tokens";
+
 const explorerURL = "https://etherscan.io/";
 
 const ContractInfo = (props) => {
   let { address } = useParams();
   const [data, setData] = useState([]);
-  const [isloading, setIsLoading] = useState(true);
+  const [horizontalTabs, sethorizontalTabs] = React.useState("tab1");
+  const [isloading, setIsLoading] = useState(false);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
     let options = {};
@@ -43,18 +52,14 @@ const ContractInfo = (props) => {
   };
   const { apiConfig, ApiCall, shortenWallet } = global;
 
-  const [errorModalStatus, setErrorModalStatus] = useState(false);
-  const [errorData, setErrorData] = useState(false);
-  const showErrorModal = (data) => {
-    setErrorModalStatus(true);
-    setErrorData(JSON.parse(JSON.stringify(data)));
-  };
-  const closeErrorModal = () => {
-    setErrorModalStatus(false);
+  const handleClickTab = (e, tabName) => {
+    e.preventDefault();
+    sethorizontalTabs(tabName);
   };
 
   useEffect(() => {
     (async () => {
+      setIsLoading(true);
       try {
         const payLoad = {
           address: address,
@@ -87,12 +92,12 @@ const ContractInfo = (props) => {
       </div>
 
       <div className="content">
-        {isloading ? (
-          <div style={{ textAlign: "center" }}>
-            <p>please wait while loading....</p>
-          </div>
-        ) : (
-          <div style={{ padding: "15px 15%" }}>
+        <div style={{ padding: "15px 7%" }}>
+          {isloading ? (
+            <div style={{ textAlign: "center" }}>
+              <p>please wait while loading....</p>
+            </div>
+          ) : (
             <Row>
               <Col md={6}>
                 <Card>
@@ -254,90 +259,114 @@ const ContractInfo = (props) => {
                 </Card>
               </Col>
             </Row>
-            <h3>Tokens</h3>
-            <Row>
-              {data.tokens.edges.map((item, key) => {
-                var tokenimages = item.node.images;
-                var ifHasImage = tokenimages.length > 0;
-                var tokenimage = ifHasImage
-                  ? tokenimages[tokenimages.length - 1].url
-                  : data.unsafeOpenseaImageUrl;
-                return (
-                  <Col md={3}>
-                    <Card style={{ cursor: "pointer" }}>
-                      <CardBody>
-                        <img
-                          src={tokenimage}
-                          width="100%"
-                          style={{
-                            filter: ifHasImage ? "" : "blur(3px)",
-                            marginBottom: "15px",
-                          }}
-                        />
-                        <h4
-                          style={{
-                            marginTop: "15px!important",
-                            fontWeight: "bold",
-                          }}
-                        >
-                          {item.node.name}
-                          <a
-                            href={`https://opensea.io/assets/${data.address}/${item.node.tokenId}`}
-                            target={"_blank"}
-                          >
-                            &nbsp; <i className="tim-icons icon-link-72" />
-                          </a>
-                        </h4>
-                        <p>
-                          <span>Owner: </span>
-                          <a
-                            href={
-                              explorerURL + "/address/" + item.node.ownerAddress
-                            }
-                            target={"_blank"}
-                          >
-                            {shortenWallet(item.node.ownerAddress)}
-                          </a>
-                        </p>
-                      </CardBody>
-                    </Card>
-                  </Col>
-                );
-              })}
-            </Row>
-            <Row>
-              <Col md={12} style={{ textAlign: "center" }}>
-                {/* <Button style={{ marginRight: "8px" }} color="secondary" size="sm" disabled>
-                  Prev
-                </Button>
-                <Button style={{ marginRight: "8px" }} color="secondary" size="sm">
-                  Next
-                </Button> */}
-                <h1>.....</h1>
-              </Col>
-            </Row>
-          </div>
-        )}
-        {/* error modal */}
-        <Modal modalClassName="modal-black" isOpen={errorModalStatus}>
-          <div className="modal-header">
-            <h4>Error Information</h4>
-            <button
-              aria-label="Close"
-              className="close"
-              data-dismiss="modal"
-              type="button"
-              onClick={closeErrorModal}
-            >
-              <i className="tim-icons icon-simple-remove" />
-            </button>
-          </div>
-          {errorData && (
-            <div className="modal-body padBtt word-breakall">
-              {errorData.error}
-            </div>
           )}
-        </Modal>
+          {/* Tabs */}
+          <Row>
+            <Col>
+              <Card>
+                <CardHeader></CardHeader>
+                <CardBody>
+                  <Nav className="nav-pills-info" pills>
+                    <NavItem>
+                      <NavLink
+                        data-toggle="tab"
+                        href="#pablo"
+                        className={horizontalTabs === "tab1" ? "active" : ""}
+                        onClick={(e) => handleClickTab(e, "tab1")}
+                      >
+                        Summary
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        data-toggle="tab"
+                        href="#pablo"
+                        className={horizontalTabs === "tab2" ? "active" : ""}
+                        onClick={(e) => handleClickTab(e, "tab2")}
+                      >
+                        Tokens
+                      </NavLink>
+                    </NavItem>
+                    <NavItem>
+                      <NavLink
+                        data-toggle="tab"
+                        href="#pablo"
+                        className={horizontalTabs === "tab3" ? "active" : ""}
+                        onClick={(e) => handleClickTab(e, "tab3")}
+                      >
+                        Other
+                      </NavLink>
+                    </NavItem>
+                  </Nav>
+                  <TabContent className="tab-space" activeTab={horizontalTabs}>
+                    <TabPane tabId="tab1">
+                      <Trades address={address} />
+                    </TabPane>
+                    <TabPane tabId="tab2">
+                      <Tokens
+                        address={address}
+                        defaultImage={data.unsafeOpenseaImageUrl}
+                      />
+                    </TabPane>
+                    <TabPane tabId="tab3"></TabPane>
+                  </TabContent>
+                </CardBody>
+              </Card>
+            </Col>
+          </Row>
+
+          {/* Tokens */}
+          {/* <Row>
+            {data.tokens.edges.map((item, key) => {
+              var tokenimages = item.node.images;
+              var ifHasImage = tokenimages.length > 0;
+              var tokenimage = ifHasImage
+                ? tokenimages[tokenimages.length - 1].url
+                : data.unsafeOpenseaImageUrl;
+              return (
+                <Col md={3}>
+                  <Card style={{ cursor: "pointer" }}>
+                    <CardBody>
+                      <img
+                        src={tokenimage}
+                        width="100%"
+                        style={{
+                          filter: ifHasImage ? "" : "blur(3px)",
+                          marginBottom: "15px",
+                        }}
+                      />
+                      <h4
+                        style={{
+                          marginTop: "15px!important",
+                          fontWeight: "bold",
+                        }}
+                      >
+                        {item.node.name}
+                        <a
+                          href={`https://opensea.io/assets/${data.address}/${item.node.tokenId}`}
+                          target={"_blank"}
+                        >
+                          &nbsp; <i className="tim-icons icon-link-72" />
+                        </a>
+                      </h4>
+                      <p>
+                        <span>Owner: </span>
+                        <a
+                          href={
+                            explorerURL + "/address/" + item.node.ownerAddress
+                          }
+                          target={"_blank"}
+                        >
+                          {shortenWallet(item.node.ownerAddress)}
+                        </a>
+                      </p>
+                    </CardBody>
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row> */}
+        </div>
       </div>
     </>
   );

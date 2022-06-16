@@ -24,6 +24,7 @@ const explorerURL = "https://etherscan.io/";
 
 const Analysis = (props) => {
   const [trending_collections, setTrendginCollections] = useState([]);
+  const [timeframe, setTimeFrame] = useState(1);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
     let options = {};
@@ -48,27 +49,35 @@ const Analysis = (props) => {
     setErrorModalStatus(false);
   };
 
+  const handleChangeTimeFrame = async (timeframe) => {
+    setTimeFrame(timeframe);
+    getTrendingCollections(timeframe);
+  };
+  const getTrendingCollections = async (timeframe = 1) => {
+    try {
+      const response = await ApiCall(
+        apiConfig.getTrendingCollections.url,
+        apiConfig.getTrendingCollections.method,
+        props.credential.loginToken,
+        { timeframe: timeframe }
+      );
+      if (response.status === 200) {
+        setTrendginCollections((ele) => {
+          ele = response.data.data;
+          return ele;
+        });
+      } else {
+        notify(response.data.message, "danger");
+      }
+    } catch (error) {
+      if (error.response) notify(error.response.data.message, "danger");
+      else if (error.request) notify("Request failed", "danger");
+      else notify("Something went wrong", "danger");
+    }
+  };
   useEffect(() => {
     (async () => {
-      try {
-        const response = await ApiCall(
-          apiConfig.getTrendingCollections.url,
-          apiConfig.getTrendingCollections.method,
-          props.credential.loginToken
-        );
-        if (response.status === 200) {
-          setTrendginCollections((ele) => {
-            ele = response.data.data;
-            return ele;
-          });
-        } else {
-          notify(response.data.message, "danger");
-        }
-      } catch (error) {
-        if (error.response) notify(error.response.data.message, "danger");
-        else if (error.request) notify("Request failed", "danger");
-        else notify("Something went wrong", "danger");
-      }
+      await getTrendingCollections(1);
     })();
   }, []);
 
@@ -92,26 +101,95 @@ const Analysis = (props) => {
                   >
                     Trending NFT collections
                   </span>
-                  <a class="pull-right" href={"/bot/search/"}>
+                  <ButtonGroup
+                    className="btn-group-toggle float-right"
+                    data-toggle="buttons"
+                  >
                     <Button
-                      style={{ marginRight: "8px" }}
                       color="info"
+                      id="0"
                       size="sm"
+                      tag="label"
+                      className={
+                        "btn-simple " + (timeframe == 1 ? "active" : "")
+                      }
+                      onClick={() => handleChangeTimeFrame(1)}
                     >
-                      Search Collections
+                      <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                        1h
+                      </span>
+                      <span className="d-block d-sm-none">
+                        <i className="tim-icons icon-single-02" />
+                      </span>
                     </Button>
-                  </a>
+                    <Button
+                      color="info"
+                      id="1"
+                      size="sm"
+                      tag="label"
+                      className={
+                        "btn-simple " + (timeframe == 4 ? "active" : "")
+                      }
+                      onClick={() => handleChangeTimeFrame(4)}
+                    >
+                      <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                        4h
+                      </span>
+                      <span className="d-block d-sm-none">
+                        <i className="tim-icons icon-gift-2" />
+                      </span>
+                    </Button>
+                    <Button
+                      color="info"
+                      id="2"
+                      size="sm"
+                      tag="label"
+                      className={
+                        "btn-simple " + (timeframe == 24 ? "active" : "")
+                      }
+                      onClick={() => handleChangeTimeFrame(24)}
+                    >
+                      <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                        1d
+                      </span>
+                      <span className="d-block d-sm-none">
+                        <i className="tim-icons icon-tap-02" />
+                      </span>
+                    </Button>
+                    <Button
+                      color="info"
+                      id="2"
+                      size="sm"
+                      tag="label"
+                      className={
+                        "btn-simple " + (timeframe == 7 * 24 ? "active" : "")
+                      }
+                      onClick={() => handleChangeTimeFrame(7 * 24)}
+                    >
+                      <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                        7d
+                      </span>
+                      <span className="d-block d-sm-none">
+                        <i className="tim-icons icon-tap-02" />
+                      </span>
+                    </Button>
+                  </ButtonGroup>
                 </div>
-
+                {/* <a class="pull-right" href={"/bot/search/"}>
+                  <Button style={{ marginRight: "8px" }} color="info" size="sm">
+                    Search Collections
+                  </Button>
+                </a> */}
                 <Table responsive>
                   <thead className="text-primary">
                     <tr>
+                      <th className="text-left">No</th>
                       <th className="text-left"></th>
                       <th className="text-left">Name (Symbol)</th>
                       <th className="text-left">Address</th>
                       <th className="text-left">
                         Sales &nbsp;
-                        <span title="Sales for the last 1 hour.">
+                        <span title="Sales for the selected timeframe.">
                           <i class="tim-icons icon-wifi"></i>
                         </span>
                       </th>
@@ -123,13 +201,13 @@ const Analysis = (props) => {
                       </th>
                       <th className="text-left">
                         AVERAGE &nbsp;
-                        <span title="Average sale price for the last 1 hour.">
+                        <span title="Average sale price for the selected timeframe.">
                           <i class="tim-icons icon-wifi"></i>
                         </span>
                       </th>
                       <th className="text-left">
                         Volume &nbsp;
-                        <span title="Total volume for the last 1 hour.">
+                        <span title="Total volume for the selected timeframe.">
                           <i class="tim-icons icon-wifi"></i>
                         </span>
                       </th>
@@ -140,6 +218,7 @@ const Analysis = (props) => {
                     {trending_collections.map((item, key) => {
                       return (
                         <tr key={key}>
+                          <td className="text-left">{key + 1}</td>
                           <td className="text-left">
                             <img src={item.unsafeOpenseaImageUrl} width={70} />
                           </td>

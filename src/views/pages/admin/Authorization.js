@@ -209,6 +209,10 @@ const Authorization = (props) => {
                 <br />
                 <br />
                 <h4 className="title">Authorization Contracts</h4>
+                <p>
+                  (User has to purchase at least one NFT collection to use this
+                  tool.)
+                </p>
                 <Button className="btn1" onClick={() => showAddModal()}>
                   + Add
                 </Button>

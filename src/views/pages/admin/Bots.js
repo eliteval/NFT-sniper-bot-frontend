@@ -57,8 +57,8 @@ const Bots = (props) => {
   const fetchNFTTrades = async () => {
     const options = {
       address: "0x30a663f66fa4689b5482bc24df164ab6891b5bdb",
-      cursor: "",
-      // limit: "10",
+      cursor: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsaW1pdCI6MTAsIm9mZnNldCI6MCwib3JkZXIiOltbInRyYW5zZmVyX2luZGV4IiwiREVTQyJdXSwid2hlcmUiOnsic2VsbGVyX2FkZHJlc3MiOnt9LCJidXllcl9hZGRyZXNzIjp7fSwidG9rZW5fYWRkcmVzcyI6IjB4MzBhNjYzZjY2ZmE0Njg5YjU0ODJiYzI0ZGYxNjRhYjY4OTFiNWJkYiJ9LCJwYWdlIjoxLCJrZXkiOiIxNDk1ODUyNS4yODYiLCJ0b3RhbCI6MzY4MCwiaWF0IjoxNjU1MjAwMjU2fQ.WE1NUwQ_hVJlN-xRmDfaWDlwqLJpcLw2fm01FnrjB50",
+      limit: "30",
       chain: "eth",
     };
     const NFTTrades = await Web3Api.token.getNFTTrades(options);
@@ -77,7 +77,7 @@ const Bots = (props) => {
   useEffect(() => {
     (async () => {
       fetchNFTTrades();
-      getAllTokenIds();
+      // getAllTokenIds();
 
       try {
         const response = await ApiCall(
