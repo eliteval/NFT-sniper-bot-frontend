@@ -35,20 +35,20 @@ const explorerURL = "https://etherscan.io/";
 
 const Trades = (props) => {
   let { address, defaultImage } = props;
-  const [tokens, setTokens] = useState([]); // showing
-  const [tokensData, setTokensData] = useState([]); //whole
+  const [tokens, setTokens] = useState([]);
   const [types, setTypes] = useState([]); //custom
   const [values, setValues] = useState([]); //custom
   const [traitsData, setTraitsData] = useState([]); //db
-  const [traitFilter, setTraitsFilter] = useState([]); //
+  const [traitFilter, setTraitsFilter] = useState([]); // filter
+  const [rankFilter, setRankFilter] = useState({
+    min: "",
+    max: "",
+  }); // filter
+  const perpage = 12; //pagination
+  const [pagenumber, setPageNumber] = useState(1); //pagination
   const [pagination, setPagination] = useState({
-    rows: 12,
-    pagenumber: 1,
-    pageArr: [1, 2, 3],
+    total: 0,
   });
-  const [openedCollapseOne, setopenedCollapseOne] = useState(false);
-  const [openedCollapseTwo, setopenedCollapseTwo] = useState(false);
-  const [openedCollapseThree, setopenedCollapseThree] = useState(false);
   const [isloading, setIsLoading] = useState(true);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
@@ -64,34 +64,25 @@ const Trades = (props) => {
   };
   const { apiConfig, ApiCall, shortenWallet } = global;
 
+  const [modalShow, setModalShow] = useState(false);
+  const [modalData, setModalData] = useState({});
+
+  //handle click pagination
   const handleClickFirst = () => {
-    setPagination({
-      ...pagination,
-      pagenumber: 1,
-      pageArr: [1, 2, 3],
-    });
+    setPageNumber(1);
   };
   const handleClickLast = () => {
-    var lastPageNumber = Math.ceil(tokens.length / pagination.rows);
-    setPagination({
-      ...pagination,
-      pagenumber: lastPageNumber,
-      pageArr: [lastPageNumber - 2, lastPageNumber - 1, lastPageNumber],
-    });
+    var lastPageNumber = Math.ceil(pagination.total / perpage);
+    setPageNumber(lastPageNumber);
   };
-
-  const handleClickNumber = (num) => {
-    var lastPageNumber = Math.ceil(tokens.length / pagination.rows);
-    var middlenumber = num;
-    if (num == 1) middlenumber = 2;
-    if (num == lastPageNumber) middlenumber = lastPageNumber - 1;
-    setPagination({
-      ...pagination,
-      pagenumber: num,
-      pageArr: [middlenumber - 1, middlenumber, middlenumber + 1],
-    });
+  const handleClickPrev = () => {
+    setPageNumber(Math.max(1, pagenumber - 1));
   };
-
+  const handleClickNext = () => {
+    var lastPageNumber = Math.ceil(pagination.total / perpage);
+    setPageNumber(Math.min(lastPageNumber, pagenumber + 1));
+  };
+  //handle check/uncheck trait
   const handleClikTraitValue = (type, value) => {
     var exist = traitFilter.find((item) => {
       return item[0] == type && item[1] == value;
@@ -103,33 +94,9 @@ const Trades = (props) => {
     else setTraitsFilter([...traitFilter, [type, value]]);
   };
 
+  //get traits
   useEffect(() => {
     setIsLoading(true);
-    (async () => {
-      try {
-        const payLoad = {
-          address: address,
-        };
-        const response = await ApiCall(
-          apiConfig.getTokens.url,
-          apiConfig.getTokens.method,
-          props.credential.loginToken,
-          payLoad
-        );
-        if (response.status === 200) {
-          setTokensData((ele) => {
-            ele = response.data.data;
-            console.log("tokens", ele);
-            return ele;
-          });
-          setIsLoading(false);
-        } else {
-          notify(response.data.message, "danger");
-        }
-      } catch (error) {
-        notify("Failed in getting data.", "danger");
-      }
-    })();
     (async () => {
       try {
         const payLoad = {
@@ -144,7 +111,7 @@ const Trades = (props) => {
         if (response.status === 200) {
           setTraitsData((ele) => {
             ele = response.data.data;
-            console.log(ele);
+            console.log("traitsData", ele);
             return ele;
           });
           setIsLoading(false);
@@ -156,7 +123,7 @@ const Trades = (props) => {
       }
     })();
   }, [address]);
-
+  //set types, values
   useEffect(() => {
     var typearr = [];
     traitsData.map((item) => typearr.push(item.type));
@@ -177,36 +144,54 @@ const Trades = (props) => {
         });
       pairarr[item] = aaa;
     });
-    console.log(pairarr);
+    console.log("values", pairarr);
     setValues(pairarr);
-    // traitsData.map((item) => {
-    //   typearr.push(item.type);
-    // });
   }, [traitsData]);
-
-  //Filter tokens
+  //refresh when filter
   useEffect(() => {
-    setTokens(
-      tokensData.filter((item) => {
-        var metadata = JSON.parse(item.metadata);
-        var attributes = metadata?.attributes;
-        if (traitFilter.length == 0) return true;
-        if (!attributes) return false;
-        var matched = false;
-        attributes.map((ii) => [
-          traitFilter.map((filter) => {
-            if (
-              ii.trait_type == filter[0] &&
-              ii.value.toLowerCase() == filter[1]
-            )
-              matched = true;
-          }),
-        ]);
+    setPageNumber(1);
+  }, [traitFilter]);
 
-        return matched;
-      })
-    );
-  }, [tokensData, traitFilter]);
+  //get tokens
+  useEffect(() => {
+    (async () => {
+      try {
+        const payLoad = {
+          address: address,
+          filter: {
+            traits: traitFilter,
+            rank: rankFilter,
+          },
+          pagination: {
+            pagenumber: pagenumber,
+            perpage: perpage,
+          },
+        };
+        const response = await ApiCall(
+          apiConfig.getTokens.url,
+          apiConfig.getTokens.method,
+          props.credential.loginToken,
+          payLoad
+        );
+        if (response.status === 200) {
+          setTokens((ele) => {
+            ele = response.data.data;
+            console.log("tokens", ele);
+            return ele;
+          });
+          setPagination({
+            ...pagination,
+            total: response.data.total,
+          });
+          setIsLoading(false);
+        } else {
+          notify(response.data.message, "danger");
+        }
+      } catch (error) {
+        notify("Failed in getting data.", "danger");
+      }
+    })();
+  }, [traitFilter, pagenumber, rankFilter]);
 
   return (
     <>
@@ -222,57 +207,58 @@ const Trades = (props) => {
         ) : (
           <>
             <h5>
-              Showing {traitFilter.length ? " by Filters " : " All "}(
-              {(pagination.pagenumber - 1) * pagination.rows + 1} ~{" "}
-              {Math.min(pagination.pagenumber * pagination.rows, tokens.length)}{" "}
-              among {tokens.length})
+              Showing {(pagenumber - 1) * perpage + 1} ~{" "}
+              {Math.min(pagenumber * perpage, pagination.total)} of{" "}
+              {pagination.total} ({" "}
+              {traitFilter.length ? traitFilter.length + " Filters " : " All "})
+              (pagenum: {pagenumber})
             </h5>
             <Row>
               <Col md="8">
+                {/* Tokens */}
                 <Row>
                   {tokens.map((item, key) => {
-                    if (
-                      key >= (pagination.pagenumber - 1) * pagination.rows &&
-                      key < pagination.pagenumber * pagination.rows
-                    ) {
-                      var metadata = JSON.parse(item.metadata);
-                      var name = metadata?.name;
-                      var image = metadata?.image;
-                      if (image)
-                        image = image.replace(
-                          "ipfs://",
-                          "https://ipfs.io/ipfs/"
-                        );
-                      var ifHasImage = image ? true : false;
-                      return (
-                        <Col md={3}>
-                          <Card style={{ cursor: "pointer" }}>
-                            <CardBody>
-                              <img
-                                src={ifHasImage ? image : defaultImage}
-                                width="100%"
-                                style={{
-                                  filter: ifHasImage ? "" : "blur(3px)",
-                                  marginBottom: "15px",
-                                }}
-                              />
-                              <h5
-                                style={{
-                                  marginTop: "15px!important",
-                                  fontWeight: "bold",
-                                }}
-                              >
-                                {name}
-                              </h5>
-                            </CardBody>
-                          </Card>
-                        </Col>
-                      );
-                    } else {
-                      return <></>;
-                    }
+                    return (
+                      <Col md={3}>
+                        <Card
+                          style={{ cursor: "pointer" }}
+                          onClick={() => {
+                            setModalData(item);
+                            setModalShow(true);
+                          }}
+                        >
+                          <CardBody>
+                            <img
+                              src={item.image ? item.image : defaultImage}
+                              width="100%"
+                              style={{
+                                filter: item.image ? "" : "blur(3px)",
+                                marginBottom: "15px",
+                              }}
+                            />
+                            <h5
+                              style={{
+                                marginTop: "15px!important",
+                                fontWeight: "bold",
+                              }}
+                            >
+                              {item.name}
+                            </h5>
+                            <p>tokenID: {item.token_id}</p>
+                            <h5
+                              style={{
+                                color: "pink",
+                              }}
+                            >
+                              Rank: #{item.rarity_rank}
+                            </h5>
+                          </CardBody>
+                        </Card>
+                      </Col>
+                    );
                   })}
                 </Row>
+                {/* Pagination */}
                 <Pagination>
                   <PaginationItem>
                     <PaginationLink
@@ -280,7 +266,10 @@ const Trades = (props) => {
                       href="#pablo"
                       onClick={(e) => handleClickFirst()}
                     >
-                      <span aria-hidden={true}>
+                      <span
+                        aria-hidden={true}
+                        className={pagenumber == 1 ? "text-muted" : ""}
+                      >
                         <i
                           aria-hidden={true}
                           className="tim-icons icon-double-left"
@@ -288,29 +277,60 @@ const Trades = (props) => {
                       </span>
                     </PaginationLink>
                   </PaginationItem>
-                  {pagination.pageArr.map((item) => {
-                    return (
-                      <PaginationItem
+                  <PaginationItem>
+                    <PaginationLink
+                      aria-label="Previous"
+                      href="#pablo"
+                      onClick={(e) => handleClickPrev()}
+                    >
+                      <span
+                        aria-hidden={true}
+                        className={pagenumber == 1 ? "text-muted" : ""}
+                      >
+                        <i
+                          aria-hidden={true}
+                          className="tim-icons icon-minimal-left"
+                        />
+                      </span>
+                    </PaginationLink>
+                  </PaginationItem>
+                  <PaginationItem>
+                    <PaginationLink
+                      aria-label="Previous"
+                      href="#pablo"
+                      onClick={(e) => handleClickNext()}
+                    >
+                      <span
+                        aria-hidden={true}
                         className={
-                          pagination.pagenumber == item ? "active" : ""
+                          pagenumber == Math.ceil(pagination.total / perpage)
+                            ? "text-muted"
+                            : ""
                         }
                       >
-                        <PaginationLink
-                          href="#pablo"
-                          onClick={(e) => handleClickNumber(item)}
-                        >
-                          {item}
-                        </PaginationLink>
-                      </PaginationItem>
-                    );
-                  })}
+                        <i
+                          aria-hidden={true}
+                          className="tim-icons icon-minimal-right
+
+                          "
+                        />
+                      </span>
+                    </PaginationLink>
+                  </PaginationItem>
                   <PaginationItem>
                     <PaginationLink
                       aria-label="Next"
                       href="#pablo"
                       onClick={(e) => handleClickLast()}
                     >
-                      <span aria-hidden={true}>
+                      <span
+                        aria-hidden={true}
+                        className={
+                          pagenumber == Math.ceil(pagination.total / perpage)
+                            ? "text-muted"
+                            : ""
+                        }
+                      >
                         <i
                           aria-hidden={true}
                           className="tim-icons icon-double-right"
@@ -321,7 +341,37 @@ const Trades = (props) => {
                 </Pagination>
               </Col>
               <Col md="4">
+                <h4>Rarity Rank</h4>
+                <Row>
+                  <Col>
+                    <label>Min</label>
+                    <FormGroup>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={rankFilter.min}
+                        onChange={(e) =>
+                          setRankFilter({ ...rankFilter, min: e.target.value })
+                        }
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <label>Max</label>
+                    <FormGroup>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={rankFilter.max}
+                        onChange={(e) =>
+                          setRankFilter({ ...rankFilter, max: e.target.value })
+                        }
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
                 <h4>Traits</h4>
+                {/* Traits collapse */}
                 <div
                   aria-multiselectable={true}
                   className="card-collapse"
@@ -344,6 +394,88 @@ const Trades = (props) => {
           </>
         )}
       </div>
+
+      {/* setting modal */}
+      <Modal modalClassName="modal-black" isOpen={modalShow} size="lg">
+        <div className="modal-header">
+          <h4>Token Details</h4>
+          <button
+            aria-label="Close"
+            className="close"
+            data-dismiss="modal"
+            type="button"
+            onClick={() => setModalShow(false)}
+          >
+            <i className="tim-icons icon-simple-remove" />
+          </button>
+        </div>
+        <div className="modal-body">
+          <h4>{modalData.name}</h4>
+          <h6>Token ID: &ensp;{modalData.token_id}</h6>
+          <h6>
+            Owner: &ensp;
+            <a
+              href={explorerURL + "/address/" + modalData.owner}
+              target={"_blank"}
+            >
+              {shortenWallet(modalData.owner)}
+            </a>
+          </h6>
+
+          <Row>
+            <Col>
+              <img
+                src={modalData.image ? modalData.image : defaultImage}
+                width="100%"
+                style={{
+                  filter: modalData.image ? "" : "blur(3px)",
+                  marginBottom: "15px",
+                }}
+              />
+              <a
+                href={`https://opensea.io/assets/ethereum/${modalData.token_address}/${modalData.token_id}`}
+                target={"_blank"}
+              >
+                <Button style={{ marginRight: "8px" }} color="info" size="sm">
+                  <i className="tim-icons icon-link-72" /> Opensea
+                </Button>
+              </a>
+            </Col>
+            <Col>
+              {modalData.attributes &&
+                modalData.attributes.map((item) => {
+                  var rarity = 0;
+                  for (var x in traitsData) {
+                    if (
+                      traitsData[x].type.toLowerCase() ==
+                        item.trait_type.toLowerCase() &&
+                      traitsData[x].value.toLowerCase() ==
+                        item.value.toLowerCase()
+                    ) {
+                      rarity = traitsData[x].rarity;
+                      break;
+                    }
+                  }
+                  return (
+                    <>
+                      <Row>
+                        <Col>
+                          <small>{item.trait_type}</small>
+                          <h6>{item.value}</h6>
+                        </Col>
+                        <Col>
+                          <p style={{ marginTop: "14px" }}>
+                            {(rarity * 100).toFixed(1)}%
+                          </p>
+                        </Col>
+                      </Row>
+                    </>
+                  );
+                })}
+            </Col>
+          </Row>
+        </div>
+      </Modal>
     </>
   );
 };
@@ -391,8 +523,8 @@ const CollapseMenu = (props) => {
                   }}
                 >
                   <Col sm="5">{item[0]}</Col>
-                  <Col sm="3">{(item[1] * 100).toFixed(1)}%</Col>
-                  <Col sm="4">
+                  <Col sm="5">{(item[1] * 100).toFixed(1)}%</Col>
+                  <Col sm="2">
                     {checkDisplay(type, item[0]) && (
                       <p className="text-success">
                         <i className="tim-icons icon-check-2" />

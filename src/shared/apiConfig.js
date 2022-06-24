@@ -57,6 +57,7 @@ const apiConfig = {
   getTrades: { url: "/api/icy/getTrades", method: "post" },
   getTokens: { url: "/api/icy/getTokens", method: "post" },
   getTraits: { url: "/api/icy/getTraits", method: "post" },
+  getHolders: { url: "/api/icy/getHolders", method: "post" },
 };
 
 export default apiConfig;

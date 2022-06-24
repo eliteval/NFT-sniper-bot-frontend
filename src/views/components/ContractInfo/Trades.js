@@ -148,7 +148,9 @@ const Trades = (props) => {
     // ];
     var chartdata = [];
     data.map((item, key) => {
-      chartdata.push([item.tradeAt, item.price]);
+      var gtTime = new Date().getTime - timeframe * 60 * 60 * 1000;
+      if (new Date(item.tradeAt).getTime > gtTime)
+        chartdata.push([item.tradeAt, item.price]);
     });
     setSeries([
       {
@@ -156,8 +158,12 @@ const Trades = (props) => {
         data: chartdata,
       },
     ]);
-  }, [data]);
+  }, [data, timeframe]);
 
+  const [timeframe, setTimeFrame] = useState(1);
+  const handleChangeTimeFrame = (timeframe) => {
+    setTimeFrame(timeframe);
+  };
   return (
     <>
       <div className="rna-container">
@@ -171,7 +177,74 @@ const Trades = (props) => {
           </div>
         ) : (
           <>
-            <h5 className="text-center"> {data.length} Trades in 7d</h5>
+            <ButtonGroup
+              className="btn-group-toggle float-right"
+              data-toggle="buttons"
+            >
+              <Button
+                color="info"
+                id="0"
+                size="sm"
+                tag="label"
+                className={"btn-simple " + (timeframe == 1 ? "active" : "")}
+                onClick={() => handleChangeTimeFrame(1)}
+              >
+                <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                  1h
+                </span>
+                <span className="d-block d-sm-none">
+                  <i className="tim-icons icon-single-02" />
+                </span>
+              </Button>
+              <Button
+                color="info"
+                id="1"
+                size="sm"
+                tag="label"
+                className={"btn-simple " + (timeframe == 4 ? "active" : "")}
+                onClick={() => handleChangeTimeFrame(4)}
+              >
+                <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                  4h
+                </span>
+                <span className="d-block d-sm-none">
+                  <i className="tim-icons icon-gift-2" />
+                </span>
+              </Button>
+              <Button
+                color="info"
+                id="2"
+                size="sm"
+                tag="label"
+                className={"btn-simple " + (timeframe == 24 ? "active" : "")}
+                onClick={() => handleChangeTimeFrame(24)}
+              >
+                <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                  1d
+                </span>
+                <span className="d-block d-sm-none">
+                  <i className="tim-icons icon-tap-02" />
+                </span>
+              </Button>
+              <Button
+                color="info"
+                id="2"
+                size="sm"
+                tag="label"
+                className={
+                  "btn-simple " + (timeframe == 7 * 24 ? "active" : "")
+                }
+                onClick={() => handleChangeTimeFrame(7 * 24)}
+              >
+                <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                  7d
+                </span>
+                <span className="d-block d-sm-none">
+                  <i className="tim-icons icon-tap-02" />
+                </span>
+              </Button>
+            </ButtonGroup>
+            <br />
             <Chart
               options={options}
               series={series}

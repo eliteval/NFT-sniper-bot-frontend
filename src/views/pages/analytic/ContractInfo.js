@@ -30,6 +30,7 @@ import { add } from "react-big-calendar/lib/utils/dates";
 import { addSyntheticTrailingComment } from "typescript";
 import Trades from "views/components/ContractInfo/Trades";
 import Tokens from "views/components/ContractInfo/Tokens";
+import Holders from "views/components/ContractInfo/Holders";
 
 const explorerURL = "https://etherscan.io/";
 
@@ -133,16 +134,6 @@ const ContractInfo = (props) => {
                         <p style={{ fontSize: "13px", margin: "8px 0px" }}>
                           Token Standard: {data.tokenStandard}
                         </p>
-                        <Button
-                          style={{ marginRight: "8px" }}
-                          color="primary"
-                          onClick={() => {
-                            window.location.href =
-                              "/bot/nft_bot/" + data.address;
-                          }}
-                        >
-                          Snipe Collection
-                        </Button>
                       </Col>
                     </Row>
                   </CardBody>
@@ -294,7 +285,7 @@ const ContractInfo = (props) => {
                         className={horizontalTabs === "tab3" ? "active" : ""}
                         onClick={(e) => handleClickTab(e, "tab3")}
                       >
-                        Other
+                        Holders
                       </NavLink>
                     </NavItem>
                   </Nav>
@@ -308,7 +299,9 @@ const ContractInfo = (props) => {
                         defaultImage={data.unsafeOpenseaImageUrl}
                       />
                     </TabPane>
-                    <TabPane tabId="tab3"></TabPane>
+                    <TabPane tabId="tab3">
+                      <Holders address={address} />
+                    </TabPane>
                   </TabContent>
                 </CardBody>
               </Card>

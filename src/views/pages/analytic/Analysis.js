@@ -220,7 +220,7 @@ const Analysis = (props) => {
                         <tr key={key}>
                           <td className="text-left">{key + 1}</td>
                           <td className="text-left">
-                            <img src={item.unsafeOpenseaImageUrl} width={70} />
+                            <img src={item.unsafeOpenseaImageUrl} width={"70px"} />
                           </td>
                           <td className="text-left">
                             {item.name} ({item.symbol})
@@ -239,17 +239,6 @@ const Analysis = (props) => {
                           <td className="text-left">{item.average}</td>
                           <td className="text-left">{item.volume} </td>
                           <td className="text-left">
-                            <Button
-                              style={{ marginRight: "8px" }}
-                              color="primary"
-                              size="sm"
-                              onClick={() => {
-                                window.location.href =
-                                  "/bot/nft_bot/" + item.address;
-                              }}
-                            >
-                              Snipe
-                            </Button>
                             <a href={"/bot/contract/" + item.address}>
                               <Button
                                 style={{ marginRight: "8px" }}
