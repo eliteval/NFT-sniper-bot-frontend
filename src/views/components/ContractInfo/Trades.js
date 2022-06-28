@@ -33,6 +33,7 @@ const Trades = (props) => {
   let { address } = props;
   const [data, setData] = useState([]);
   const [series, setSeries] = useState([]);
+  const [timeframe, setTimeFrame] = useState(168);
   const [isloading, setIsLoading] = useState(true);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
@@ -148,10 +149,11 @@ const Trades = (props) => {
     // ];
     var chartdata = [];
     data.map((item, key) => {
-      var gtTime = new Date().getTime - timeframe * 60 * 60 * 1000;
-      if (new Date(item.tradeAt).getTime > gtTime)
+      var gtTime = new Date().getTime() - timeframe * 60 * 60 * 1000;
+      if (new Date(item.tradeAt).getTime() > gtTime)
         chartdata.push([item.tradeAt, item.price]);
     });
+    console.log('chartdata', chartdata)
     setSeries([
       {
         name: "Trades",
@@ -160,8 +162,9 @@ const Trades = (props) => {
     ]);
   }, [data, timeframe]);
 
-  const [timeframe, setTimeFrame] = useState(1);
+
   const handleChangeTimeFrame = (timeframe) => {
+    console.log('timeframe', timeframe)
     setTimeFrame(timeframe);
   };
   return (
@@ -244,6 +247,7 @@ const Trades = (props) => {
                 </span>
               </Button>
             </ButtonGroup>
+            <br />
             <br />
             <Chart
               options={options}

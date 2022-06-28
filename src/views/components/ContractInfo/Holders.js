@@ -83,6 +83,15 @@ const Holders = (props) => {
             return ele;
           });
           setTokens(response.data.tokens_count);
+          setHolders(response.data.holders);
+          setAvgOwned(response.data.avg_owned);
+          setUniquePercent(response.data.unique_percent);
+          setHolders1(response.data.holders1);
+          setHolders2_5(response.data.holders2_5);
+          setHolders6_20(response.data.holders6_20);
+          setHolders21_50(response.data.holders21_50);
+          setHolders51(response.data.holders51);
+
           setIsLoading(false);
         } else {
           notify(response.data.message, "danger");
@@ -93,29 +102,6 @@ const Holders = (props) => {
     })();
   }, [address]);
 
-  useEffect(() => {
-    setHolders(holdersdata.length);
-    setAvgOwned(tokens / holdersdata.length);
-    setUniquePercent((holdersdata.length / tokens) * 100);
-
-    var holders1 = 0,
-      holders2_5 = 0,
-      holders6_20 = 0,
-      holders21_50 = 0,
-      holders51 = 0;
-    holdersdata.map((item) => {
-      if (item.count == 1) holders1++;
-      if (item.count >= 2 && item.count <= 5) holders2_5++;
-      if (item.count >= 6 && item.count <= 20) holders6_20++;
-      if (item.count >= 21 && item.count <= 50) holders21_50++;
-      if (item.count >= 51) holders51++;
-    });
-    setHolders1(holders1);
-    setHolders2_5(holders2_5);
-    setHolders6_20(holders6_20);
-    setHolders21_50(holders21_50);
-    setHolders51(holders51);
-  }, [holdersdata, tokens]);
   return (
     <>
       <div className="rna-container">
@@ -150,7 +136,7 @@ const Holders = (props) => {
                 <Card>
                   <CardBody>
                     <h4 className="text-muted">Percent of Unique Holders</h4>
-                    <h3>{unique_percent}%</h3>
+                    <h3>{unique_percent.toFixed(1)}%</h3>
                   </CardBody>
                 </Card>
               </Col>

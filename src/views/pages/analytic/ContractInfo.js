@@ -35,7 +35,7 @@ import Holders from "views/components/ContractInfo/Holders";
 const explorerURL = "https://etherscan.io/";
 
 const ContractInfo = (props) => {
-  let { address } = useParams();
+  let { address, type } = useParams();
   const [data, setData] = useState([]);
   const [horizontalTabs, sethorizontalTabs] = React.useState("tab1");
   const [isloading, setIsLoading] = useState(false);
@@ -252,113 +252,66 @@ const ContractInfo = (props) => {
             </Row>
           )}
           {/* Tabs */}
-          <Row>
-            <Col>
-              <Card>
-                <CardHeader></CardHeader>
-                <CardBody>
-                  <Nav className="nav-pills-info" pills>
-                    <NavItem>
-                      <NavLink
-                        data-toggle="tab"
-                        href="#pablo"
-                        className={horizontalTabs === "tab1" ? "active" : ""}
-                        onClick={(e) => handleClickTab(e, "tab1")}
-                      >
-                        Summary
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        data-toggle="tab"
-                        href="#pablo"
-                        className={horizontalTabs === "tab2" ? "active" : ""}
-                        onClick={(e) => handleClickTab(e, "tab2")}
-                      >
-                        Tokens
-                      </NavLink>
-                    </NavItem>
-                    <NavItem>
-                      <NavLink
-                        data-toggle="tab"
-                        href="#pablo"
-                        className={horizontalTabs === "tab3" ? "active" : ""}
-                        onClick={(e) => handleClickTab(e, "tab3")}
-                      >
-                        Holders
-                      </NavLink>
-                    </NavItem>
-                  </Nav>
-                  <TabContent className="tab-space" activeTab={horizontalTabs}>
-                    <TabPane tabId="tab1">
-                      <Trades address={address} />
-                    </TabPane>
-                    <TabPane tabId="tab2">
-                      <Tokens
-                        address={address}
-                        defaultImage={data.unsafeOpenseaImageUrl}
-                      />
-                    </TabPane>
-                    <TabPane tabId="tab3">
-                      <Holders address={address} />
-                    </TabPane>
-                  </TabContent>
-                </CardBody>
-              </Card>
-            </Col>
-          </Row>
-
-          {/* Tokens */}
-          {/* <Row>
-            {data.tokens.edges.map((item, key) => {
-              var tokenimages = item.node.images;
-              var ifHasImage = tokenimages.length > 0;
-              var tokenimage = ifHasImage
-                ? tokenimages[tokenimages.length - 1].url
-                : data.unsafeOpenseaImageUrl;
-              return (
-                <Col md={3}>
-                  <Card style={{ cursor: "pointer" }}>
-                    <CardBody>
-                      <img
-                        src={tokenimage}
-                        width="100%"
-                        style={{
-                          filter: ifHasImage ? "" : "blur(3px)",
-                          marginBottom: "15px",
-                        }}
-                      />
-                      <h4
-                        style={{
-                          marginTop: "15px!important",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        {item.node.name}
-                        <a
-                          href={`https://opensea.io/assets/${data.address}/${item.node.tokenId}`}
-                          target={"_blank"}
+          {type == "top" && (
+            <Row>
+              <Col>
+                <Card>
+                  <CardHeader></CardHeader>
+                  <CardBody>
+                    <Nav className="nav-pills-info" pills>
+                      <NavItem>
+                        <NavLink
+                          data-toggle="tab"
+                          href="#pablo"
+                          className={horizontalTabs === "tab1" ? "active" : ""}
+                          onClick={(e) => handleClickTab(e, "tab1")}
                         >
-                          &nbsp; <i className="tim-icons icon-link-72" />
-                        </a>
-                      </h4>
-                      <p>
-                        <span>Owner: </span>
-                        <a
-                          href={
-                            explorerURL + "/address/" + item.node.ownerAddress
-                          }
-                          target={"_blank"}
+                          Summary
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          data-toggle="tab"
+                          href="#pablo"
+                          className={horizontalTabs === "tab2" ? "active" : ""}
+                          onClick={(e) => handleClickTab(e, "tab2")}
                         >
-                          {shortenWallet(item.node.ownerAddress)}
-                        </a>
-                      </p>
-                    </CardBody>
-                  </Card>
-                </Col>
-              );
-            })}
-          </Row> */}
+                          Tokens
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          data-toggle="tab"
+                          href="#pablo"
+                          className={horizontalTabs === "tab3" ? "active" : ""}
+                          onClick={(e) => handleClickTab(e, "tab3")}
+                        >
+                          Holders
+                        </NavLink>
+                      </NavItem>
+                    </Nav>
+                    <TabContent
+                      className="tab-space"
+                      activeTab={horizontalTabs}
+                    >
+                      <TabPane tabId="tab1">
+                        <Trades address={address} />
+                      </TabPane>
+                      <TabPane tabId="tab2">
+                        <Tokens
+                          address={address}
+                          defaultImage={data.unsafeOpenseaImageUrl}
+                        />
+                      </TabPane>
+                      <TabPane tabId="tab3">
+                        <Holders address={address} />
+                      </TabPane>
+                    </TabContent>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+          )}
         </div>
       </div>
     </>

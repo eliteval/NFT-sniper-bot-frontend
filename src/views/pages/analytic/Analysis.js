@@ -101,6 +101,15 @@ const Analysis = (props) => {
                   >
                     Trending NFT collections
                   </span>
+                  <a href={"/bot/search"}>
+                    <Button
+                      style={{ marginLeft: "18px" }}
+                      color="info"
+                      size="sm"
+                    >
+                      Search
+                    </Button>
+                  </a>
                   <ButtonGroup
                     className="btn-group-toggle float-right"
                     data-toggle="buttons"
@@ -220,7 +229,10 @@ const Analysis = (props) => {
                         <tr key={key}>
                           <td className="text-left">{key + 1}</td>
                           <td className="text-left">
-                            <img src={item.unsafeOpenseaImageUrl} width={"70px"} />
+                            <img
+                              src={item.unsafeOpenseaImageUrl}
+                              width={"70px"}
+                            />
                           </td>
                           <td className="text-left">
                             {item.name} ({item.symbol})
@@ -239,7 +251,7 @@ const Analysis = (props) => {
                           <td className="text-left">{item.average}</td>
                           <td className="text-left">{item.volume} </td>
                           <td className="text-left">
-                            <a href={"/bot/contract/" + item.address}>
+                            <a href={"/bot/contract/" + item.address + "/top"}>
                               <Button
                                 style={{ marginRight: "8px" }}
                                 color="info"

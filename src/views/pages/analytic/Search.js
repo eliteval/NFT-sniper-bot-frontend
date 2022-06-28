@@ -145,18 +145,7 @@ const Search = (props) => {
                             </a>
                           </td>
                           <td className="text-left">
-                            <Button
-                              style={{ marginRight: "8px" }}
-                              color="primary"
-                              size="sm"
-                              onClick={() => {
-                                window.location.href =
-                                  "/bot/nft_bot/" + item.node.address;
-                              }}
-                            >
-                              Snipe
-                            </Button>
-                            <a href={"/bot/contract/" + item.node.address}>
+                            <a href={"/bot/contract/" + item.node.address+"/search"}>
                               <Button
                                 style={{ marginRight: "8px" }}
                                 color="info"

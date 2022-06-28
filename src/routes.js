@@ -55,7 +55,7 @@ const routes = [
     hidden: true, //use when need to hide item in sidebar
   },
   {
-    path: "/contract/:address",
+    path: "/contract/:address/:type?",
     name: "Contract Information",
     rtlName: "",
     icon: "tim-icons icon-chart-bar-32",

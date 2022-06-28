@@ -44,6 +44,10 @@ const Trades = (props) => {
     min: "",
     max: "",
   }); // filter
+  const [tokenidFilter, setTokenIDFilter] = useState({
+    min: "",
+    max: "",
+  }); // filter
   const perpage = 12; //pagination
   const [pagenumber, setPageNumber] = useState(1); //pagination
   const [pagination, setPagination] = useState({
@@ -161,6 +165,7 @@ const Trades = (props) => {
           filter: {
             traits: traitFilter,
             rank: rankFilter,
+            token_id: tokenidFilter
           },
           pagination: {
             pagenumber: pagenumber,
@@ -191,7 +196,7 @@ const Trades = (props) => {
         notify("Failed in getting data.", "danger");
       }
     })();
-  }, [traitFilter, pagenumber, rankFilter]);
+  }, [pagenumber, traitFilter, rankFilter, tokenidFilter]);
 
   return (
     <>
@@ -209,9 +214,7 @@ const Trades = (props) => {
             <h5>
               Showing {(pagenumber - 1) * perpage + 1} ~{" "}
               {Math.min(pagenumber * perpage, pagination.total)} of{" "}
-              {pagination.total} ({" "}
-              {traitFilter.length ? traitFilter.length + " Filters " : " All "})
-              (pagenum: {pagenumber})
+              {pagination.total}
             </h5>
             <Row>
               <Col md="8">
@@ -341,6 +344,41 @@ const Trades = (props) => {
                 </Pagination>
               </Col>
               <Col md="4">
+                <h4>Token ID</h4>
+                <Row>
+                  <Col>
+                    <label>Min</label>
+                    <FormGroup>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={tokenidFilter.min}
+                        onChange={(e) =>
+                          setTokenIDFilter({
+                            ...tokenidFilter,
+                            min: e.target.value,
+                          })
+                        }
+                      />
+                    </FormGroup>
+                  </Col>
+                  <Col>
+                    <label>Max</label>
+                    <FormGroup>
+                      <Input
+                        type="number"
+                        min="0"
+                        value={tokenidFilter.max}
+                        onChange={(e) =>
+                          setTokenIDFilter({
+                            ...tokenidFilter,
+                            max: e.target.value,
+                          })
+                        }
+                      />
+                    </FormGroup>
+                  </Col>
+                </Row>
                 <h4>Rarity Rank</h4>
                 <Row>
                   <Col>
