@@ -31,13 +31,14 @@ import { addSyntheticTrailingComment } from "typescript";
 import Trades from "views/components/ContractInfo/Trades";
 import Tokens from "views/components/ContractInfo/Tokens";
 import Holders from "views/components/ContractInfo/Holders";
+import LiveView from "views/components/ContractInfo/LiveView";
 
 const explorerURL = "https://etherscan.io/";
 
 const ContractInfo = (props) => {
   let { address, type } = useParams();
   const [data, setData] = useState([]);
-  const [horizontalTabs, sethorizontalTabs] = React.useState("tab1");
+  const [horizontalTabs, sethorizontalTabs] = React.useState("tab0");
   const [isloading, setIsLoading] = useState(false);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
@@ -263,6 +264,16 @@ const ContractInfo = (props) => {
                         <NavLink
                           data-toggle="tab"
                           href="#pablo"
+                          className={horizontalTabs === "tab0" ? "active" : ""}
+                          onClick={(e) => handleClickTab(e, "tab0")}
+                        >
+                          Live View
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          data-toggle="tab"
+                          href="#pablo"
                           className={horizontalTabs === "tab1" ? "active" : ""}
                           onClick={(e) => handleClickTab(e, "tab1")}
                         >
@@ -294,6 +305,9 @@ const ContractInfo = (props) => {
                       className="tab-space"
                       activeTab={horizontalTabs}
                     >
+                      <TabPane tabId="tab0">
+                        <LiveView address={address} />
+                      </TabPane>
                       <TabPane tabId="tab1">
                         <Trades address={address} />
                       </TabPane>

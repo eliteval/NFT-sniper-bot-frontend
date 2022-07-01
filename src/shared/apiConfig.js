@@ -58,6 +58,8 @@ const apiConfig = {
   getTokens: { url: "/api/icy/getTokens", method: "post" },
   getTraits: { url: "/api/icy/getTraits", method: "post" },
   getHolders: { url: "/api/icy/getHolders", method: "post" },
+  getNerdBooks: { url: "/api/icy/getNerdBooks", method: "post" },
+  getNerdTrades: { url: "/api/icy/getNerdTrades", method: "post" },
 };
 
 export default apiConfig;

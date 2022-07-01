@@ -165,7 +165,7 @@ const Trades = (props) => {
           filter: {
             traits: traitFilter,
             rank: rankFilter,
-            token_id: tokenidFilter
+            token_id: tokenidFilter,
           },
           pagination: {
             pagenumber: pagenumber,
@@ -232,10 +232,11 @@ const Trades = (props) => {
                         >
                           <CardBody>
                             <img
-                              src={item.image ? item.image : defaultImage}
+                              src={`https://img.nftnerds.ai/${address}_${item.token_id}_96x96`}
+                              // src={item.image ? item.image : defaultImage}
                               width="100%"
                               style={{
-                                filter: item.image ? "" : "blur(3px)",
+                                // filter: item.image ? "" : "blur(3px)",
                                 marginBottom: "15px",
                               }}
                             />
@@ -463,10 +464,11 @@ const Trades = (props) => {
           <Row>
             <Col>
               <img
-                src={modalData.image ? modalData.image : defaultImage}
+                src={`https://img.nftnerds.ai/${address}_${modalData.token_id}_96x96`}
+                // src={modalData.image ? modalData.image : defaultImage}
                 width="100%"
                 style={{
-                  filter: modalData.image ? "" : "blur(3px)",
+                  // filter: modalData.image ? "" : "blur(3px)",
                   marginBottom: "15px",
                 }}
               />

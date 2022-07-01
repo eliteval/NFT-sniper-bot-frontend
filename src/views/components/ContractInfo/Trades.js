@@ -56,6 +56,9 @@ const Trades = (props) => {
       zoom: {
         type: "xy",
       },
+      toolbar: {
+        show: true,
+      },
     },
     dataLabels: {
       enabled: false,
@@ -153,18 +156,17 @@ const Trades = (props) => {
       if (new Date(item.tradeAt).getTime() > gtTime)
         chartdata.push([item.tradeAt, item.price]);
     });
-    console.log('chartdata', chartdata)
+    console.log("chartdata", chartdata);
     setSeries([
       {
-        name: "Trades",
+        name: "Prices",
         data: chartdata,
       },
     ]);
   }, [data, timeframe]);
 
-
   const handleChangeTimeFrame = (timeframe) => {
-    console.log('timeframe', timeframe)
+    console.log("timeframe", timeframe);
     setTimeFrame(timeframe);
   };
   return (

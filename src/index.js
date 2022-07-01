@@ -18,7 +18,10 @@ import "assets/css/nucleo-icons.css";
 import "react-notification-alert/dist/animate.css";
 import "assets/scss/black-dashboard-pro-react.scss?v=1.2.0";
 import "assets/demo/demo.css";
+import "assets/css/custom.css";
 import { MoralisProvider } from "react-moralis";
+import TimeAgo from 'javascript-time-ago'
+import en from 'javascript-time-ago/locale/en.json'
 
 const mapStateToProps = (state) => ({
   credential: state.LoginReducer,
@@ -37,6 +40,7 @@ global.ApiCall = ApiCall;
 global.shortenWallet = shortenWallet;
 global.Actions = Actions;
 global.apiConfig = apiConfig;
+TimeAgo.addDefaultLocale(en)
 ReactDOM.render(
   <Provider store={storePersist.store}>
     <MoralisProvider serverUrl="https://ehc8jexzkct0.usemoralis.com:2053/server" appId="8v6Eym9LSfNhLO1kWg7HtsgporbJ3BeTQrAQdU42">

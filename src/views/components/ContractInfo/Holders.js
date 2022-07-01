@@ -136,7 +136,7 @@ const Holders = (props) => {
                 <Card>
                   <CardBody>
                     <h4 className="text-muted">Percent of Unique Holders</h4>
-                    <h3>{unique_percent.toFixed(1)}%</h3>
+                    <h3>{Number(unique_percent).toFixed(1)}%</h3>
                   </CardBody>
                 </Card>
               </Col>

@@ -1,0 +1,27 @@
+.led-green {
+  width: 12px;
+  height: 12px;
+  background-color: #abff00;
+  border-radius: 50%;
+  box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #8aa05d 0 -1px 9px,
+    #abff00 0 2px 12px;
+  animation: blinkGreen 1s infinite;
+}
+
+@keyframes blinkGreen {
+  from {
+    background-color: #abff00;
+  }
+  50% {
+    background-color: #8ba55c;
+    box-shadow: rgba(0, 0, 0, 0.2) 0 -1px 7px 1px, inset #8aa05d 0 -1px 9px,
+      #abff00 0 0 0;
+  }
+  to {
+    background-color: #abff00;
+  }
+}
+
+.apexcharts-menu.apexcharts-menu-open {
+  color: black;
+}
