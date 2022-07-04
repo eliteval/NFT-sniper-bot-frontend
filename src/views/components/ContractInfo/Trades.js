@@ -74,12 +74,16 @@ const Trades = (props) => {
       type: "datetime",
       labels: {
         style: {
-          color: "white",
+          colors: "white",
         },
       },
     },
     yaxis: {
-      // max: 70,
+      labels: {
+        style: {
+          colors: "white",
+        },
+      },
     },
     title: {
       // text: "Trades",

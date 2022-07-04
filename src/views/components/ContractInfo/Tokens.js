@@ -464,7 +464,7 @@ const Trades = (props) => {
           <Row>
             <Col>
               <img
-                src={`https://img.nftnerds.ai/${address}_${modalData.token_id}_96x96`}
+                src={`https://img.nftnerds.ai/${address}_${modalData.token_id}_450x450`}
                 // src={modalData.image ? modalData.image : defaultImage}
                 width="100%"
                 style={{
