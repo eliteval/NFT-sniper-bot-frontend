@@ -52,6 +52,10 @@ const apiConfig = {
     url: "/api/icy/getTrendingCollections",
     method: "post",
   },
+  getTop100Collections: {
+    url: "/api/icy/getTop100Collections",
+    method: "post",
+  },
   getContractInfo: { url: "/api/icy/getContractInfo", method: "post" },
   searchContracts: { url: "/api/icy/searchContracts", method: "post" },
   getTrades: { url: "/api/icy/getTrades", method: "post" },
@@ -60,6 +64,7 @@ const apiConfig = {
   getHolders: { url: "/api/icy/getHolders", method: "post" },
   getNerdBooks: { url: "/api/icy/getNerdBooks", method: "post" },
   getNerdTrades: { url: "/api/icy/getNerdTrades", method: "post" },
+
 };
 
 export default apiConfig;

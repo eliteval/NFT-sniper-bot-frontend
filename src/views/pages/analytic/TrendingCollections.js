@@ -22,7 +22,7 @@ import {
 } from "reactstrap";
 const explorerURL = "https://etherscan.io/";
 
-const Analysis = (props) => {
+const TrendingCollections = (props) => {
   const [trending_collections, setTrendginCollections] = useState([]);
   const [timeframe, setTimeFrame] = useState(1);
   const notificationAlertRef = React.useRef(null);
@@ -77,7 +77,7 @@ const Analysis = (props) => {
   };
   useEffect(() => {
     (async () => {
-      await getTrendingCollections(1);
+      await getTrendingCollections(timeframe);
     })();
   }, []);
 
@@ -301,4 +301,4 @@ const mapStateToProps = (state) => {
   return { credential: LoginReducer };
 };
 
-export default connect(mapStateToProps)(Analysis);
+export default connect(mapStateToProps)(TrendingCollections);

@@ -3,7 +3,8 @@ import User from "views/pages/User.js";
 import Register from "views/pages/Register.js";
 import NFTSniperBot from "views/Sniper/NFTSniperBot";
 
-import Analysis from "views/pages/analytic/Analysis";
+import TrendingCollections from "views/pages/analytic/TrendingCollections";
+import TopCollections from "views/pages/analytic/TopCollections";
 import ContractInfo from "views/pages/analytic/ContractInfo";
 import Search from "views/pages/analytic/Search";
 import PancakeOneToken from "views/Sniper/PancakeOneToken";
@@ -37,11 +38,20 @@ const routes = [
     hidden: true,
   },
   {
-    path: "/analysis",
-    name: "NFT Analysis",
+    path: "/trending-collections",
+    name: "Trending Collections",
     rtlName: "",
     icon: "tim-icons icon-chart-bar-32",
-    component: Analysis,
+    component: TrendingCollections,
+    layout: "/bot",
+    blockAT: true, //use when admin blocks this tab
+  },
+  {
+    path: "/top-collections",
+    name: "Top Collections",
+    rtlName: "",
+    icon: "tim-icons icon-chart-bar-32",
+    component: TopCollections,
     layout: "/bot",
     blockAT: true, //use when admin blocks this tab
   },
