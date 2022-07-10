@@ -99,16 +99,10 @@ const TopCollections = (props) => {
                   <thead className="text-primary">
                     <tr>
                       <th className="text-left"></th>
-                      <th className="text-left"></th>
-                      <th className="text-left">Collection</th>
-                      {/* <th className="text-left">Address</th> */}
-                      <th className="text-left">Sales USD</th>
-                      <th className="text-left">Sales</th>
-                      <th className="text-left">Buyers</th>
-                      <th className="text-left">Sellers</th>
-                      <th className="text-left">Owners</th>
-                      <th className="text-left">Txns</th>
-                      {/* <th className="text-left">Action</th> */}
+                      {/* <th className="text-left"></th> */}
+                      <th className="text-left">Contract</th>
+                      <th className="text-left">Holders</th>
+                      <th className="text-left">Action</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -116,33 +110,29 @@ const TopCollections = (props) => {
                       return (
                         <tr key={key}>
                           <td className="text-left">{item.rank}</td>
-                          <td className="text-left">
-                            <img src={item.iconUrl} width={"30px"} />
-                          </td>
-                          <td className="text-left">{item.contractName}</td>
                           {/* <td className="text-left">
-                            {item.address}
+                            <img src={item.iconUrl} width={"30px"} />
+                          </td> */}
+                          <td className="text-left">
+                            {item.contractAddress}
                             <a
-                              href={`${explorerURL}/address/${item.address}`}
+                              href={`${explorerURL}/address/${item.contractAddress}`}
                               target={"_blank"}
                             >
                               &nbsp; <i className="tim-icons icon-link-72" />
                             </a>
-                          </td> */}
-                          <td className="text-left">
-                            $ {Number(item.valueUSD).toFixed(1)}
                           </td>
                           <td className="text-left">
-                            {Number(item.value).toFixed(1)} {item.baseCurrency}
+                            {Number(item.marketCap).toLocaleString()} {item.currency}
                           </td>
-                          <td className="text-left">{item.buyers}</td>
+                          <td className="text-left">{item.holders}</td>
                           <td className="text-left">{item.sellers} </td>
                           <td className="text-left">
                             {item.owners > 0 && item.owners}
                           </td>
                           <td className="text-left">{item.transactions} </td>
-                          {/* <td className="text-left">
-                            <a href={"/bot/contract/" + item.address + "/top"}>
+                          <td className="text-left">
+                            <a href={"/bot/contract/" + item.contractAddress + "/top"}>
                               <Button
                                 style={{ marginRight: "8px" }}
                                 color="info"
@@ -151,7 +141,7 @@ const TopCollections = (props) => {
                                 More
                               </Button>
                             </a>
-                          </td> */}
+                          </td>
                         </tr>
                       );
                     })}
