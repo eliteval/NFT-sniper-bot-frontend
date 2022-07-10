@@ -20,7 +20,6 @@ import {
   Table,
   Modal,
 } from "reactstrap";
-import { useMoralisWeb3Api } from "react-moralis";
 
 const explorerURL = "https://etherscan.io/";
 // const explorerURL = "https://testnet.bscscan.com/";
@@ -52,32 +51,8 @@ const Bots = (props) => {
     setErrorModalStatus(false);
   };
 
-  const Web3Api = useMoralisWeb3Api();
-
-  const fetchNFTTrades = async () => {
-    const options = {
-      address: "0x30a663f66fa4689b5482bc24df164ab6891b5bdb",
-      cursor: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJsaW1pdCI6MTAsIm9mZnNldCI6MCwib3JkZXIiOltbInRyYW5zZmVyX2luZGV4IiwiREVTQyJdXSwid2hlcmUiOnsic2VsbGVyX2FkZHJlc3MiOnt9LCJidXllcl9hZGRyZXNzIjp7fSwidG9rZW5fYWRkcmVzcyI6IjB4MzBhNjYzZjY2ZmE0Njg5YjU0ODJiYzI0ZGYxNjRhYjY4OTFiNWJkYiJ9LCJwYWdlIjoxLCJrZXkiOiIxNDk1ODUyNS4yODYiLCJ0b3RhbCI6MzY4MCwiaWF0IjoxNjU1MjAwMjU2fQ.WE1NUwQ_hVJlN-xRmDfaWDlwqLJpcLw2fm01FnrjB50",
-      limit: "30",
-      chain: "eth",
-    };
-    const NFTTrades = await Web3Api.token.getNFTTrades(options);
-    console.log(NFTTrades);
-  };
-
-  const getAllTokenIds = async () => {
-    const options = {
-      address: "0x6c1cd3bce68653bba8ab28882d2d3d261113e3a8",
-      chain: "eth",
-    };
-    const NFTs = await Web3Api.token.getAllTokenIds(options);
-    console.log(NFTs);
-  };
-
   useEffect(() => {
     (async () => {
-      fetchNFTTrades();
-      // getAllTokenIds();
 
       try {
         const response = await ApiCall(

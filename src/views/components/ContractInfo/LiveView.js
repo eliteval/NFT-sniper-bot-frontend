@@ -40,6 +40,11 @@ const LiveView = (props) => {
   const [bookData, setBookData] = useState({});
   const [bookDataIndexes, setBookDataIndexes] = useState([]);
   const [tradeData, setTradeData] = useState({});
+  const [inputs, setInputs] = useState({});
+  const [buySetting, setBuySetting] = useState({});
+  const [buySaved, setBuySaved] = useState(false);
+  const [buyDone, setBuyDone] = useState(false);
+  const [boughtID, setBoughtID] = useState(0);
   const [isloading, setIsLoading] = useState(true);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
@@ -64,11 +69,11 @@ const LiveView = (props) => {
       await loadData();
       setInterval(async () => {
         await loadData();
-      }, 60 * 1000);
+      }, 15 * 1000);
     })();
   }, [address]);
 
-  const loadData = async () => {
+  let loadData = async () => {
     //get books
     try {
       const payLoad = {
@@ -83,7 +88,8 @@ const LiveView = (props) => {
       if (response.status === 200) {
         var bookData = response.data;
         setBookData(bookData);
-        setBookDataIndexes(getSortedIndexes(bookData.timestamps));
+        var bookDataIndexes = getSortedIndexes(bookData.timestamps);
+        setBookDataIndexes(bookDataIndexes);
         setIsLoading(false);
       } else {
         notify(response.data.message, "danger");
@@ -132,6 +138,38 @@ const LiveView = (props) => {
     return indexes;
   };
 
+  useEffect(() => {
+    console.log(1, buySaved);
+    if (!buySaved) return; //have to set trigger
+    console.log(2);
+    for (var i = 0; i < bookDataIndexes.length; i++) {
+      var index = bookDataIndexes[i];
+      if (
+        bookData.listing_time[index] * 1000 <
+        new Date().getTime() - 3 * 60 * 60 * 1000 // 3 hours ago
+      )
+        continue;
+      //filter buy setting
+      if (
+        (buySetting.idmin &&
+          Number(bookData.token_ids[index]) < Number(buySetting.idmin)) ||
+        (buySetting.idmax &&
+          Number(bookData.token_ids[index]) > Number(buySetting.idmax)) ||
+        (buySetting.pricemin &&
+          Number(bookData.prices[index]) < Number(buySetting.pricemin)) ||
+        (buySetting.pricemax &&
+          Number(bookData.prices[index]) > Number(buySetting.pricemax))
+      )
+        continue;
+      console.log(3);
+      alert(bookData.token_ids[index]);
+      setBoughtID(bookData.token_ids[index]);
+      setBuyDone(true);
+      setBuySaved(false);
+      break;
+    }
+  }, [buySaved, bookDataIndexes]);
+
   return (
     <>
       <div className="rna-container">
@@ -152,7 +190,128 @@ const LiveView = (props) => {
                 style={{ marginTop: "2px" }}
               ></div>
             </div>
-            <Row className="mt-2 px-2">
+            <h4 className="mt-2 px-2">Auto-buy</h4>
+            {buyDone ? (
+              <p className="mt-2 px-2">Bot bought target NFT token automatcially. #{boughtID}</p>
+            ) : (
+              <Row className="px-2">
+                <Col md="3">
+                  <Row>
+                    <Col>
+                      <label>Price Min</label>
+                      <FormGroup>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={inputs.pricemin}
+                          onChange={(e) =>
+                            setInputs({
+                              ...inputs,
+                              pricemin: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <label>Price Max</label>
+                      <FormGroup>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={inputs.pricemax}
+                          onChange={(e) =>
+                            setInputs({
+                              ...inputs,
+                              pricemax: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col md="3">
+                  <Row>
+                    <Col>
+                      <label>TokenID Min</label>
+                      <FormGroup>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={inputs.idmin}
+                          onChange={(e) =>
+                            setInputs({
+                              ...inputs,
+                              idmin: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col>
+                      <label>TokenID Max</label>
+                      <FormGroup>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={inputs.idmax}
+                          onChange={(e) =>
+                            setInputs({
+                              ...inputs,
+                              idmax: e.target.value,
+                            })
+                          }
+                        />
+                      </FormGroup>
+                    </Col>
+                  </Row>
+                </Col>
+                <Col md="6">
+                  <Button
+                    className="mt-4"
+                    color="info"
+                    onClick={() => {
+                      if (
+                        window.confirm(
+                          "Bot will buy filtered token automatically. Do you confirm?"
+                        ) == true
+                      ) {
+                        setBuySetting(inputs);
+                        setBuySaved(true);
+                      }
+                    }}
+                  >
+                    Save
+                  </Button>
+                  <Button
+                    className="mt-4"
+                    color="warning"
+                    onClick={() => {
+                      setBuySaved(false);
+                    }}
+                  >
+                    Clear
+                  </Button>
+                </Col>
+              </Row>
+            )}
+
+            {buySaved && (
+              <p>
+                (Auto buy will trigger with these setting) <br />
+                {buySetting.pricemin && (
+                  <>&emsp;Price Min:{buySetting.pricemin} </>
+                )}
+                {buySetting.pricemax && (
+                  <>&emsp;Price Max:{buySetting.pricemax} </>
+                )}
+                {buySetting.idmin && <>&emsp;ID Min:{buySetting.idmin} </>}
+                {buySetting.idmax && <>&emsp;ID Max:{buySetting.idmax} </>}
+              </p>
+            )}
+
+            <Row className="mt-4 px-2">
               {/* book data */}
               <Col md="6">
                 <h4>LISTINGS</h4>
@@ -166,6 +325,23 @@ const LiveView = (props) => {
                       new Date().getTime() - 3 * 60 * 60 * 1000 // 3 hours ago
                     )
                       return;
+                    //filter buy setting
+                    if (
+                      (buySetting.idmin &&
+                        Number(bookData.token_ids[index]) <
+                          Number(buySetting.idmin)) ||
+                      (buySetting.idmax &&
+                        Number(bookData.token_ids[index]) >
+                          Number(buySetting.idmax)) ||
+                      (buySetting.pricemin &&
+                        Number(bookData.prices[index]) <
+                          Number(buySetting.pricemin)) ||
+                      (buySetting.pricemax &&
+                        Number(bookData.prices[index]) >
+                          Number(buySetting.pricemax))
+                    )
+                      return;
+
                     return (
                       <Row
                         className="mt-1 py-2"

@@ -43,7 +43,7 @@ global.apiConfig = apiConfig;
 TimeAgo.addDefaultLocale(en)
 ReactDOM.render(
   <Provider store={storePersist.store}>
-    <MoralisProvider serverUrl="https://ehc8jexzkct0.usemoralis.com:2053/server" appId="8v6Eym9LSfNhLO1kWg7HtsgporbJ3BeTQrAQdU42">
+    <MoralisProvider serverUrl="https://ncjyxkasj8xr.usemoralis.com:2053/server" appId="WHeAxRRa1EPI4YWEl6eLRDNjHfhTNxiuGTCGZg0F">
       <PersistGate persistor={storePersist.persistor}>
         <BrowserRouter>
           <Switch>
