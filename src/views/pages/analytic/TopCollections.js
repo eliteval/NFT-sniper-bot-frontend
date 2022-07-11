@@ -101,6 +101,7 @@ const TopCollections = (props) => {
                       <th className="text-left"></th>
                       {/* <th className="text-left"></th> */}
                       <th className="text-left">Contract</th>
+                      <th className="text-left">MarketCap</th>
                       <th className="text-left">Holders</th>
                       <th className="text-left">Action</th>
                     </tr>
@@ -126,11 +127,6 @@ const TopCollections = (props) => {
                             {Number(item.marketCap).toLocaleString()} {item.currency}
                           </td>
                           <td className="text-left">{item.holders}</td>
-                          <td className="text-left">{item.sellers} </td>
-                          <td className="text-left">
-                            {item.owners > 0 && item.owners}
-                          </td>
-                          <td className="text-left">{item.transactions} </td>
                           <td className="text-left">
                             <a href={"/bot/contract/" + item.contractAddress + "/top"}>
                               <Button
