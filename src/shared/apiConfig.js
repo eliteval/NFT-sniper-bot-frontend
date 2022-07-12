@@ -63,8 +63,15 @@ const apiConfig = {
   getTraits: { url: "/api/icy/getTraits", method: "post" },
   getHolders: { url: "/api/icy/getHolders", method: "post" },
   getNerdBooks: { url: "/api/icy/getNerdBooks", method: "post" },
+  // getNerdBooks: {
+  //   url: "https://storage.googleapis.com/nftnerds-books/",
+  //   method: "get",
+  // },
   getNerdTrades: { url: "/api/icy/getNerdTrades", method: "post" },
-
+  // getNerdTrades: {
+  //   url: "https://storage.googleapis.com/nftnerds-trades/",
+  //   method: "get",
+  // },
 };
 
 export default apiConfig;

@@ -69,7 +69,7 @@ const LiveView = (props) => {
       await loadData();
       setInterval(async () => {
         await loadData();
-      }, 15 * 1000);
+      }, 120 * 1000);
     })();
   }, [address]);
 
@@ -192,7 +192,9 @@ const LiveView = (props) => {
             </div>
             <h4 className="mt-2 px-2">Auto-buy</h4>
             {buyDone ? (
-              <p className="mt-2 px-2">Bot bought target NFT token automatcially. #{boughtID}</p>
+              <p className="mt-2 px-2">
+                Bot bought target NFT token automatcially. #{boughtID}
+              </p>
             ) : (
               <Row className="px-2">
                 <Col md="3">
