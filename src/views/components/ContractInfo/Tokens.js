@@ -100,7 +100,6 @@ const Trades = (props) => {
 
   //get traits
   useEffect(() => {
-    setIsLoading(true);
     (async () => {
       try {
         const payLoad = {
@@ -118,7 +117,6 @@ const Trades = (props) => {
             console.log("traitsData", ele);
             return ele;
           });
-          setIsLoading(false);
         } else {
           notify(response.data.message, "danger");
         }
@@ -162,6 +160,7 @@ const Trades = (props) => {
   }, [pagenumber]);
 
   const getTokens = async () => {
+    setIsLoading(true);
     try {
       const payLoad = {
         address: address,
@@ -191,13 +190,13 @@ const Trades = (props) => {
           ...pagination,
           total: response.data.total,
         });
-        setIsLoading(false);
       } else {
         notify(response.data.message, "danger");
       }
     } catch (error) {
       notify("Failed in getting data.", "danger");
     }
+    setIsLoading(false);
   };
 
   const handleFilterButton = async () => {
@@ -211,19 +210,19 @@ const Trades = (props) => {
       </div>
 
       <div className="content">
-        {isloading ? (
-          <div style={{ textAlign: "center" }}>
-            <p>please wait while loading....</p>
-          </div>
-        ) : (
-          <>
-            <h5>
-              Showing {(pagenumber - 1) * perpage + 1} ~{" "}
-              {Math.min(pagenumber * perpage, pagination.total)} of{" "}
-              {pagination.total}
-            </h5>
-            <Row>
-              <Col md="8">
+        <Row>
+          <Col md="8">
+            {isloading ? (
+              <div style={{ textAlign: "center" }}>
+                <p>please wait while loading....</p>
+              </div>
+            ) : (
+              <>
+                <h5>
+                  Showing {(pagenumber - 1) * perpage + 1} ~{" "}
+                  {Math.min(pagenumber * perpage, pagination.total)} of{" "}
+                  {pagination.total}
+                </h5>
                 {/* Tokens */}
                 <Row>
                   {tokens.map((item, key) => {
@@ -349,103 +348,103 @@ const Trades = (props) => {
                     </PaginationLink>
                   </PaginationItem>
                 </Pagination>
+              </>
+            )}
+          </Col>
+          <Col md="4">
+            <button
+              className="btn btn-block btn-info mb-3"
+              onClick={() => {
+                handleFilterButton();
+              }}
+            >
+              Filter
+            </button>
+            <h4>Token ID</h4>
+            <Row>
+              <Col>
+                <label>Min</label>
+                <FormGroup>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={tokenidFilter.min}
+                    onChange={(e) =>
+                      setTokenIDFilter({
+                        ...tokenidFilter,
+                        min: e.target.value,
+                      })
+                    }
+                  />
+                </FormGroup>
               </Col>
-              <Col md="4">
-                <button
-                  className="btn btn-block btn-info mb-3"
-                  onClick={() => {
-                    handleFilterButton();
-                  }}
-                >
-                  Filter
-                </button>
-                <h4>Token ID</h4>
-                <Row>
-                  <Col>
-                    <label>Min</label>
-                    <FormGroup>
-                      <Input
-                        type="number"
-                        min="0"
-                        value={tokenidFilter.min}
-                        onChange={(e) =>
-                          setTokenIDFilter({
-                            ...tokenidFilter,
-                            min: e.target.value,
-                          })
-                        }
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col>
-                    <label>Max</label>
-                    <FormGroup>
-                      <Input
-                        type="number"
-                        min="0"
-                        value={tokenidFilter.max}
-                        onChange={(e) =>
-                          setTokenIDFilter({
-                            ...tokenidFilter,
-                            max: e.target.value,
-                          })
-                        }
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <h4>Rarity Rank</h4>
-                <Row>
-                  <Col>
-                    <label>Min</label>
-                    <FormGroup>
-                      <Input
-                        type="number"
-                        min="0"
-                        value={rankFilter.min}
-                        onChange={(e) =>
-                          setRankFilter({ ...rankFilter, min: e.target.value })
-                        }
-                      />
-                    </FormGroup>
-                  </Col>
-                  <Col>
-                    <label>Max</label>
-                    <FormGroup>
-                      <Input
-                        type="number"
-                        min="0"
-                        value={rankFilter.max}
-                        onChange={(e) =>
-                          setRankFilter({ ...rankFilter, max: e.target.value })
-                        }
-                      />
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <h4>Traits</h4>
-                {/* Traits collapse */}
-                <div
-                  aria-multiselectable={true}
-                  className="card-collapse"
-                  id="accordion"
-                  role="tablist"
-                >
-                  {types.map((type) => {
-                    return (
-                      <CollapseMenu
-                        type={type}
-                        valuearr={values[type]}
-                        traitFilter={traitFilter}
-                        handleClikTraitValue={handleClikTraitValue}
-                      />
-                    );
-                  })}
-                </div>
+              <Col>
+                <label>Max</label>
+                <FormGroup>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={tokenidFilter.max}
+                    onChange={(e) =>
+                      setTokenIDFilter({
+                        ...tokenidFilter,
+                        max: e.target.value,
+                      })
+                    }
+                  />
+                </FormGroup>
               </Col>
             </Row>
-          </>
-        )}
+            <h4>Rarity Rank</h4>
+            <Row>
+              <Col>
+                <label>Min</label>
+                <FormGroup>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={rankFilter.min}
+                    onChange={(e) =>
+                      setRankFilter({ ...rankFilter, min: e.target.value })
+                    }
+                  />
+                </FormGroup>
+              </Col>
+              <Col>
+                <label>Max</label>
+                <FormGroup>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={rankFilter.max}
+                    onChange={(e) =>
+                      setRankFilter({ ...rankFilter, max: e.target.value })
+                    }
+                  />
+                </FormGroup>
+              </Col>
+            </Row>
+            <h4>Traits</h4>
+            {/* Traits collapse */}
+            <div
+              aria-multiselectable={true}
+              className="card-collapse"
+              id="accordion"
+              role="tablist"
+            >
+              {types.map((type) => {
+                return (
+                  <CollapseMenu
+                    type={type}
+                    valuearr={values[type]}
+                    traitFilter={traitFilter}
+                    handleClikTraitValue={handleClikTraitValue}
+                  />
+                );
+              })}
+            </div>
+          </Col>
+        </Row>
       </div>
 
       {/* setting modal */}
