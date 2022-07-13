@@ -157,46 +157,52 @@ const Trades = (props) => {
   }, [traitFilter]);
 
   //get tokens
-  useEffect(() => {
-    (async () => {
-      try {
-        const payLoad = {
-          address: address,
-          filter: {
-            traits: traitFilter,
-            rank: rankFilter,
-            token_id: tokenidFilter,
-          },
-          pagination: {
-            pagenumber: pagenumber,
-            perpage: perpage,
-          },
-        };
-        const response = await ApiCall(
-          apiConfig.getTokens.url,
-          apiConfig.getTokens.method,
-          props.credential.loginToken,
-          payLoad
-        );
-        if (response.status === 200) {
-          setTokens((ele) => {
-            ele = response.data.data;
-            console.log("tokens", ele);
-            return ele;
-          });
-          setPagination({
-            ...pagination,
-            total: response.data.total,
-          });
-          setIsLoading(false);
-        } else {
-          notify(response.data.message, "danger");
-        }
-      } catch (error) {
-        notify("Failed in getting data.", "danger");
+  useEffect(async () => {
+    await getTokens();
+  }, [pagenumber]);
+
+  const getTokens = async () => {
+    try {
+      const payLoad = {
+        address: address,
+        filter: {
+          traits: traitFilter,
+          rank: rankFilter,
+          token_id: tokenidFilter,
+        },
+        pagination: {
+          pagenumber: pagenumber,
+          perpage: perpage,
+        },
+      };
+      const response = await ApiCall(
+        apiConfig.getTokens.url,
+        apiConfig.getTokens.method,
+        props.credential.loginToken,
+        payLoad
+      );
+      if (response.status === 200) {
+        setTokens((ele) => {
+          ele = response.data.data;
+          console.log("tokens", ele);
+          return ele;
+        });
+        setPagination({
+          ...pagination,
+          total: response.data.total,
+        });
+        setIsLoading(false);
+      } else {
+        notify(response.data.message, "danger");
       }
-    })();
-  }, [pagenumber, traitFilter, rankFilter, tokenidFilter]);
+    } catch (error) {
+      notify("Failed in getting data.", "danger");
+    }
+  };
+
+  const handleFilterButton = async () => {
+    await getTokens();
+  };
 
   return (
     <>
@@ -345,6 +351,14 @@ const Trades = (props) => {
                 </Pagination>
               </Col>
               <Col md="4">
+                <button
+                  className="btn btn-block btn-info mb-3"
+                  onClick={() => {
+                    handleFilterButton();
+                  }}
+                >
+                  Filter
+                </button>
                 <h4>Token ID</h4>
                 <Row>
                   <Col>
