@@ -99,7 +99,8 @@ const TopCollections = (props) => {
                   <thead className="text-primary">
                     <tr>
                       <th className="text-left"></th>
-                      {/* <th className="text-left"></th> */}
+                      <th className="text-left"></th>
+                      <th className="text-left">Name (Symbol)</th>
                       <th className="text-left">Contract</th>
                       <th className="text-left">MarketCap</th>
                       <th className="text-left">Holders</th>
@@ -111,9 +112,10 @@ const TopCollections = (props) => {
                       return (
                         <tr key={key}>
                           <td className="text-left">{item.rank}</td>
-                          {/* <td className="text-left">
-                            <img src={item.iconUrl} width={"30px"} />
-                          </td> */}
+                          <td className="text-left">
+                            <img src={item.unsafeOpenseaImageUrl} width={"70px"} />
+                          </td>
+                          <td className="text-left">{item.name}({item.symbol})</td>
                           <td className="text-left">
                             {item.contractAddress}
                             <a

@@ -60,6 +60,7 @@ const apiConfig = {
   searchContracts: { url: "/api/icy/searchContracts", method: "post" },
   getTrades: { url: "/api/icy/getTrades", method: "post" },
   getTokens: { url: "/api/icy/getTokens", method: "post" },
+  getTokens_api: { url: "http://137.184.120.200:8080/getTokens", method: "post" },
   getTraits: { url: "/api/icy/getTraits", method: "post" },
   getHolders: { url: "/api/icy/getHolders", method: "post" },
   // getNerdBooks: { url: "/api/icy/getNerdBooks", method: "post" },
