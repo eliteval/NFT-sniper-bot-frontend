@@ -306,7 +306,10 @@ const ContractInfo = (props) => {
                       activeTab={horizontalTabs}
                     >
                       <TabPane tabId="tab0">
-                        <LiveView address={address} />
+                        <LiveView
+                          address={address}
+                          isOnTop={horizontalTabs === "tab0"}
+                        />
                       </TabPane>
                       <TabPane tabId="tab1">
                         <Trades address={address} />

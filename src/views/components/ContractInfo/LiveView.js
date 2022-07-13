@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import NotificationAlert from "react-notification-alert";
 import ReactTimeAgo from "react-time-ago";
@@ -36,7 +36,12 @@ import Chart from "react-apexcharts";
 const explorerURL = "https://etherscan.io/";
 
 const LiveView = (props) => {
-  let { address } = props;
+  let { address, isOnTop } = props;
+  const latestProps = useRef(props);
+  useEffect(() => {
+    latestProps.current = props;
+  });
+  const [timer, setTimer] = useState();
   const [bookData, setBookData] = useState({});
   const [bookDataIndexes, setBookDataIndexes] = useState([]);
   const [tradeData, setTradeData] = useState({});
@@ -67,28 +72,27 @@ const LiveView = (props) => {
   useEffect(() => {
     (async () => {
       await loadData();
-      setInterval(async () => {
-        await loadData();
-      }, 120 * 1000);
+      const id = setInterval(async () => {
+        console.log("isOnTop", latestProps.current.isOnTop);
+        if (latestProps.current.isOnTop) await loadData();
+      }, 30 * 1000);
+      return () => clearInterval(id);
     })();
   }, [address]);
 
   let loadData = async () => {
+    console.log('Loading data.....')
     //get books
     try {
-      const payLoad = {
-        address: address,
-      };
-      const response = await ApiCall(
-        apiConfig.getNerdBooks.url,
-        apiConfig.getNerdBooks.method,
-        props.credential.loginToken,
-        payLoad
+      const response = await fetch(
+        `${apiConfig.getNerdBooks.url}?address=${address}`,
+        { mode: "cors" }
       );
       if (response.status === 200) {
-        var bookData = response.data;
+        const data = await response.json();
+        var bookData = data;
         setBookData(bookData);
-        var bookDataIndexes = getSortedIndexes(bookData.timestamps);
+        var bookDataIndexes = getSortedIndexes(bookData.listing_time);
         setBookDataIndexes(bookDataIndexes);
         setIsLoading(false);
       } else {
@@ -99,17 +103,14 @@ const LiveView = (props) => {
     }
     //get trades
     try {
-      const payLoad = {
-        address: address,
-      };
-      const response = await ApiCall(
-        apiConfig.getNerdTrades.url,
-        apiConfig.getNerdTrades.method,
-        props.credential.loginToken,
-        payLoad
+      const response = await fetch(
+        `${apiConfig.getNerdTrades.url}?address=${address}`,
+        { mode: "cors" }
       );
       if (response.status === 200) {
-        setTradeData(response.data);
+        const data = await response.json();
+        console.log('tradeData', data)
+        setTradeData(data);
 
         setIsLoading(false);
       } else {
@@ -139,7 +140,6 @@ const LiveView = (props) => {
   };
 
   useEffect(() => {
-    console.log(1, buySaved);
     if (!buySaved) return; //have to set trigger
     console.log(2);
     for (var i = 0; i < bookDataIndexes.length; i++) {
@@ -322,11 +322,6 @@ const LiveView = (props) => {
                   style={{ height: "700px", overflow: "auto" }}
                 >
                   {bookDataIndexes.map((index, key) => {
-                    if (
-                      bookData.listing_time[index] * 1000 <
-                      new Date().getTime() - 3 * 60 * 60 * 1000 // 3 hours ago
-                    )
-                      return;
                     //filter buy setting
                     if (
                       (buySetting.idmin &&
@@ -416,11 +411,6 @@ const LiveView = (props) => {
                 >
                   {tradeData.token_ids &&
                     tradeData.token_ids.map((token_id, key) => {
-                      if (
-                        tradeData.timestamps[key] * 1000 <
-                        new Date().getTime() - 24 * 60 * 60 * 1000 // 24 hours ago
-                      )
-                        return;
                       return (
                         <Row
                           className="mt-1 py-2"
