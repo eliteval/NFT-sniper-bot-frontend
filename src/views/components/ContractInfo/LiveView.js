@@ -33,6 +33,8 @@ import {
   PaginationLink,
 } from "reactstrap";
 import Chart from "react-apexcharts";
+import { useMoralis } from "react-moralis";
+
 const explorerURL = "https://etherscan.io/";
 
 const LiveView = (props) => {
@@ -68,6 +70,25 @@ const LiveView = (props) => {
   const [modalShow, setModalShow] = useState(false);
   const [modalData, setModalData] = useState({});
 
+  const {
+    Moralis,
+    user,
+    logout,
+    authenticate,
+    enableWeb3,
+    isInitialized,
+    isAuthenticated,
+    isWeb3Enabled,
+  } = useMoralis();
+  useEffect(() => {
+    if (isInitialized) {
+      Moralis.initPlugins();
+      console.log("ini");
+    }
+
+    // eslint-disable-next-line
+  }, []);
+
   //get data
   useEffect(() => {
     (async () => {
@@ -81,7 +102,7 @@ const LiveView = (props) => {
   }, [address]);
 
   let loadData = async () => {
-    console.log('Loading data.....')
+    console.log("Loading data.....");
     //get books
     try {
       const response = await fetch(
@@ -109,15 +130,16 @@ const LiveView = (props) => {
       );
       if (response.status === 200) {
         const data = await response.json();
-        console.log('tradeData', data)
+        console.log("tradeData", data);
         setTradeData(data);
-
+        props.onFetchTrades(data); //pass trades to parent
         setIsLoading(false);
       } else {
         notify(response.data.message, "danger");
       }
     } catch (error) {
       notify("Failed in getting data.", "danger");
+      console.log(error);
     }
   };
 
@@ -161,7 +183,10 @@ const LiveView = (props) => {
           Number(bookData.prices[index]) > Number(buySetting.pricemax))
       )
         continue;
-      console.log(3);
+      //auto buy
+      getAsset(address, bookData.token_ids[index]);
+      getOrder(address, bookData.token_ids[index]);
+      createBuyOrder(address, bookData.token_ids[index]);
       alert(bookData.token_ids[index]);
       setBoughtID(bookData.token_ids[index]);
       setBuyDone(true);
@@ -169,6 +194,38 @@ const LiveView = (props) => {
       break;
     }
   }, [buySaved, bookDataIndexes]);
+
+  const getAsset = async (tokenAddress, tokenId) => {
+    const res = await Moralis.Plugins.opensea.getAsset({
+      network: "mainnet",
+      tokenAddress: tokenAddress,
+      tokenId: tokenId,
+    });
+    console.log("getassets", res);
+  };
+  const getOrder = async (address, token_id) => {
+    const res = await Moralis.Plugins.opensea.getOrders({
+      network: "mainnet",
+      tokenAddress: address,
+      tokenId: token_id,
+      orderSide: 0, // 0 is for buy orders, 1 is for sell orders
+      page: 1, // pagination shows 20 orders each page
+    });
+    console.log("getorders", res);
+  };
+  const createBuyOrder = async (tokenAddress, tokenId) => {
+    await Moralis.Plugins.opensea.createBuyOrder({
+      network: "mainnet",
+      tokenAddress: tokenAddress,
+      tokenId: tokenId,
+      tokenType: "ERC721",
+      amount: 0.0001,
+      userAddress: props.credential.loginUserName,
+      paymentTokenAddress: "0xc778417e063141139fce010982780140aa0cd5ab",
+    });
+
+    console.log("Create Buy Order Successful");
+  };
 
   return (
     <>

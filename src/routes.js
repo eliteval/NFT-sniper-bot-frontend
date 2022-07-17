@@ -46,15 +46,15 @@ const routes = [
     layout: "/bot",
     blockAT: true, //use when admin blocks this tab
   },
-  {
-    path: "/top-collections",
-    name: "Top Collections",
-    rtlName: "",
-    icon: "tim-icons icon-chart-bar-32",
-    component: TopCollections,
-    layout: "/bot",
-    blockAT: true, //use when admin blocks this tab
-  },
+  // {
+  //   path: "/top-collections",
+  //   name: "Top Collections",
+  //   rtlName: "",
+  //   icon: "tim-icons icon-chart-bar-32",
+  //   component: TopCollections,
+  //   layout: "/bot",
+  //   blockAT: true, //use when admin blocks this tab
+  // },
   {
     path: "/search",
     name: "Search Contract",

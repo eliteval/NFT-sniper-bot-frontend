@@ -30,10 +30,10 @@ import Chart from "react-apexcharts";
 const explorerURL = "https://etherscan.io/";
 
 const Trades = (props) => {
-  let { address } = props;
+  let { address, trades } = props;
   const [data, setData] = useState([]);
   const [series, setSeries] = useState([]);
-  const [timeframe, setTimeFrame] = useState(168);
+  const [timeframe, setTimeFrame] = useState(1);
   const [isloading, setIsLoading] = useState(true);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
@@ -48,6 +48,84 @@ const Trades = (props) => {
     notificationAlertRef.current.notificationAlert(options);
   };
   const { apiConfig, ApiCall, shortenWallet } = global;
+  const handleChangeTimeFrame = (timeframe) => {
+    console.log("timeframe", timeframe);
+    setTimeFrame(timeframe);
+  };
+  //Using trades from API
+  // useEffect(() => {
+  //   (async () => {
+  //     try {
+  //       const payLoad = {
+  //         address: address,
+  //       };
+  //       const response = await ApiCall(
+  //         apiConfig.getTrades.url,
+  //         apiConfig.getTrades.method,
+  //         props.credential.loginToken,
+  //         payLoad
+  //       );
+  //       if (response.status === 200) {
+  //         setData((ele) => {
+  //           ele = response.data.data;
+  //           console.log(ele);
+  //           return ele;
+  //         });
+  //         setIsLoading(false);
+  //       } else {
+  //         notify(response.data.message, "danger");
+  //       }
+  //     } catch (error) {
+  //       notify("Failed in getting data.", "danger");
+  //     }
+  //   })();
+  // }, [address]);
+
+  // useEffect(() => {
+  //   // const series = [
+  //   //   {
+  //   //     name: "SAMPLE A",
+  //   //     data: [
+  //   //       ["2022-06-15 02:26:35.000Z", 5.4],
+  //   //       ["2022-06-15 03:26:35.000Z", 2],
+  //   //       ["2022-06-15 04:26:35.000Z", 3],
+  //   //     ],
+  //   //   },
+  //   // ];
+  //   var chartdata = [];
+  //   data.map((item, key) => {
+  //     var gtTime = new Date().getTime() - timeframe * 60 * 60 * 1000;
+  //     if (new Date(item.tradeAt).getTime() > gtTime)
+  //       chartdata.push([item.tradeAt, item.price]);
+  //   });
+  //   console.log("chartdata", chartdata);
+  //   setSeries([
+  //     {
+  //       name: "Prices",
+  //       data: chartdata,
+  //     },
+  //   ]);
+  // }, [data, timeframe]);
+
+  //Using trades from Nerdtrades
+  useEffect(() => {
+    if (!trades.prices) return;
+    var chartdata = [];
+    var gtTime = new Date().getTime() - timeframe * 60 * 60 * 1000;
+    console.log(gtTime);
+    trades.prices.map((price, key) => {
+      if (trades.timestamps[key] * 1000 > gtTime)
+        chartdata.push([trades.timestamps[key], price]);
+    });
+    console.log("chartdata", chartdata);
+    setSeries([
+      {
+        name: "Prices",
+        data: chartdata,
+      },
+    ]);
+    setIsLoading(false);
+  }, [trades, timeframe]);
 
   const options = {
     chart: {
@@ -107,7 +185,8 @@ const Trades = (props) => {
       custom: function ({ series, seriesIndex, dataPointIndex, w }) {
         return (
           '<div class="arrow_box" style="color:black">' +
-          `${data[dataPointIndex].tradeAt}<br/> Traded At ${data[dataPointIndex].price} ETH<br/>Token ID: ${data[dataPointIndex].tokenID}` +
+          // `${data[dataPointIndex].tradeAt}<br/> Traded At ${data[dataPointIndex].price} ETH<br/>Token ID: ${data[dataPointIndex].tokenID}` +
+          `${new Date(trades.timestamps[dataPointIndex]*1000)}<br/> Traded At ${trades.prices[dataPointIndex]} ETH<br/>Token ID: ${trades.token_ids[dataPointIndex]}` +
           "</span>" +
           "</div>"
         );
@@ -115,64 +194,6 @@ const Trades = (props) => {
     },
   };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const payLoad = {
-          address: address,
-        };
-        const response = await ApiCall(
-          apiConfig.getTrades.url,
-          apiConfig.getTrades.method,
-          props.credential.loginToken,
-          payLoad
-        );
-        if (response.status === 200) {
-          setData((ele) => {
-            ele = response.data.data;
-            console.log(ele);
-            return ele;
-          });
-          setIsLoading(false);
-        } else {
-          notify(response.data.message, "danger");
-        }
-      } catch (error) {
-        notify("Failed in getting data.", "danger");
-      }
-    })();
-  }, [address]);
-
-  useEffect(() => {
-    // const series = [
-    //   {
-    //     name: "SAMPLE A",
-    //     data: [
-    //       ["2022-06-15 02:26:35.000Z", 5.4],
-    //       ["2022-06-15 03:26:35.000Z", 2],
-    //       ["2022-06-15 04:26:35.000Z", 3],
-    //     ],
-    //   },
-    // ];
-    var chartdata = [];
-    data.map((item, key) => {
-      var gtTime = new Date().getTime() - timeframe * 60 * 60 * 1000;
-      if (new Date(item.tradeAt).getTime() > gtTime)
-        chartdata.push([item.tradeAt, item.price]);
-    });
-    console.log("chartdata", chartdata);
-    setSeries([
-      {
-        name: "Prices",
-        data: chartdata,
-      },
-    ]);
-  }, [data, timeframe]);
-
-  const handleChangeTimeFrame = (timeframe) => {
-    console.log("timeframe", timeframe);
-    setTimeFrame(timeframe);
-  };
   return (
     <>
       <div className="rna-container">

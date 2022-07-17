@@ -40,6 +40,7 @@ const ContractInfo = (props) => {
   const [data, setData] = useState([]);
   const [horizontalTabs, sethorizontalTabs] = React.useState("tab0");
   const [isloading, setIsLoading] = useState(false);
+  const [trades, setTrades] = useState([]);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
     let options = {};
@@ -86,6 +87,10 @@ const ContractInfo = (props) => {
       }
     })();
   }, [address]);
+
+  const handleTrades = (trades) => {
+    setTrades(trades);
+  };
 
   return (
     <>
@@ -309,10 +314,11 @@ const ContractInfo = (props) => {
                         <LiveView
                           address={address}
                           isOnTop={horizontalTabs === "tab0"}
+                          onFetchTrades={handleTrades}
                         />
                       </TabPane>
                       <TabPane tabId="tab1">
-                        <Trades address={address} />
+                        <Trades address={address} trades = {trades}/>
                       </TabPane>
                       <TabPane tabId="tab2">
                         <Tokens
