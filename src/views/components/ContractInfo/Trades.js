@@ -115,7 +115,7 @@ const Trades = (props) => {
     console.log(gtTime);
     trades.prices.map((price, key) => {
       if (trades.timestamps[key] * 1000 > gtTime)
-        chartdata.push([trades.timestamps[key], price]);
+        chartdata.push([trades.timestamps[key] * 1000, price]);
     });
     console.log("chartdata", chartdata);
     setSeries([
@@ -186,7 +186,11 @@ const Trades = (props) => {
         return (
           '<div class="arrow_box" style="color:black">' +
           // `${data[dataPointIndex].tradeAt}<br/> Traded At ${data[dataPointIndex].price} ETH<br/>Token ID: ${data[dataPointIndex].tokenID}` +
-          `${new Date(trades.timestamps[dataPointIndex]*1000)}<br/> Traded At ${trades.prices[dataPointIndex]} ETH<br/>Token ID: ${trades.token_ids[dataPointIndex]}` +
+          `${new Date(
+            trades.timestamps[dataPointIndex] * 1000
+          )}<br/> Traded At ${
+            trades.prices[dataPointIndex]
+          } ETH<br/>Token ID: ${trades.token_ids[dataPointIndex]}` +
           "</span>" +
           "</div>"
         );
