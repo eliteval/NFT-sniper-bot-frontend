@@ -315,6 +315,7 @@ const ContractInfo = (props) => {
                           address={address}
                           isOnTop={horizontalTabs === "tab0"}
                           onFetchTrades={handleTrades}
+                          defaultImage={data.unsafeOpenseaImageUrl}
                         />
                       </TabPane>
                       <TabPane tabId="tab1">

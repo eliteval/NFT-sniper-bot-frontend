@@ -33,12 +33,14 @@ import {
   PaginationLink,
 } from "reactstrap";
 import Chart from "react-apexcharts";
+import ImageItem from "views/components/ContractInfo/ImageItem";
+import altimage from "assets/img/alt.png";
 import { useMoralis } from "react-moralis";
 
 const explorerURL = "https://etherscan.io/";
 
 const LiveView = (props) => {
-  let { address, isOnTop } = props;
+  let { address, isOnTop, defaultImage } = props;
   const latestProps = useRef(props);
   useEffect(() => {
     latestProps.current = props;
@@ -379,6 +381,11 @@ const LiveView = (props) => {
                   style={{ height: "700px", overflow: "auto" }}
                 >
                   {bookDataIndexes.map((index, key) => {
+                    if (
+                      bookData.listing_time[index] * 1000 <
+                      new Date().getTime() - 3 * 60 * 60 * 1000 // 3 hours ago
+                    )
+                      return;
                     //filter buy setting
                     if (
                       (buySetting.idmin &&
@@ -407,7 +414,20 @@ const LiveView = (props) => {
                       >
                         <Col sm="6">
                           <div className="d-flex">
-                            <LazyLoadImage
+                            <ImageItem
+                              src={[
+                                `https://img.nftnerds.ai/${address}_${bookData.token_ids[index]}_96x96`,
+                                defaultImage,
+                                altimage,
+                              ]}
+                              size={48}
+                              style={{
+                                objectFit: "contain",
+                                borderRadius: "4px",
+                                display: "block",
+                              }}
+                            />
+                            {/* <LazyLoadImage
                               src={`https://img.nftnerds.ai/${address}_${bookData.token_ids[index]}_96x96`}
                               width="48"
                               height="48"
@@ -416,7 +436,7 @@ const LiveView = (props) => {
                                 borderRadius: "4px",
                                 display: "block",
                               }}
-                            />
+                            /> */}
                             <div className="mt-3 mx-2">
                               <h6>#{bookData.token_ids[index]}</h6>
                             </div>
@@ -468,6 +488,11 @@ const LiveView = (props) => {
                 >
                   {tradeData.token_ids &&
                     tradeData.token_ids.map((token_id, key) => {
+                      if (
+                        tradeData.timestamps[key] * 1000 <
+                        new Date().getTime() - 12 * 60 * 60 * 1000 // 12 hours ago
+                      )
+                        return;
                       return (
                         <Row
                           className="mt-1 py-2"
@@ -479,7 +504,20 @@ const LiveView = (props) => {
                         >
                           <Col sm="6">
                             <div className="d-flex">
-                              <LazyLoadImage
+                              <ImageItem
+                                src={[
+                                  `https://img.nftnerds.ai/${address}_${token_id}_96x96`,
+                                  defaultImage,
+                                  altimage,
+                                ]}
+                                size={48}
+                                style={{
+                                  objectFit: "contain",
+                                  borderRadius: "4px",
+                                  display: "block",
+                                }}
+                              />
+                              {/* <LazyLoadImage
                                 src={`https://img.nftnerds.ai/${address}_${token_id}_96x96`}
                                 width="48"
                                 height="48"
@@ -488,7 +526,7 @@ const LiveView = (props) => {
                                   borderRadius: "4px",
                                   display: "block",
                                 }}
-                              />
+                              /> */}
                               <div className="mt-3 mx-2">
                                 <h6>#{token_id}</h6>
                               </div>

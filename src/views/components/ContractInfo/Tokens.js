@@ -31,6 +31,9 @@ import {
   PaginationLink,
 } from "reactstrap";
 import Chart from "react-apexcharts";
+import ImageItem from "views/components/ContractInfo/ImageItem";
+import altimage from "assets/img/alt.png";
+
 const explorerURL = "https://etherscan.io/";
 
 const Trades = (props) => {
@@ -236,12 +239,15 @@ const Trades = (props) => {
                           }}
                         >
                           <CardBody>
-                            <img
-                              src={`https://img.nftnerds.ai/${address}_${item.token_id}_96x96`}
-                              // src={item.image ? item.image : defaultImage}
-                              width="100%"
+                            <ImageItem
+                              src={[
+                                item.image,
+                                `https://img.nftnerds.ai/${address}_${item.token_id}_96x96`,
+                                defaultImage,
+                                altimage,
+                              ]}
+                              size={"100%"}
                               style={{
-                                // filter: item.image ? "" : "blur(3px)",
                                 marginBottom: "15px",
                               }}
                             />
@@ -477,7 +483,11 @@ const Trades = (props) => {
           <Row>
             <Col>
               <img
-                src={`https://img.nftnerds.ai/${address}_${modalData.token_id}_450x450`}
+                src={
+                  modalData.image
+                    ? modalData.image
+                    : `https://img.nftnerds.ai/${address}_${modalData.token_id}_450x450`
+                }
                 // src={modalData.image ? modalData.image : defaultImage}
                 width="100%"
                 style={{
