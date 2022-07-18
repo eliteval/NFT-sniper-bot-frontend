@@ -240,12 +240,20 @@ const Trades = (props) => {
                         >
                           <CardBody>
                             <ImageItem
-                              src={[
-                                item.image,
-                                `https://img.nftnerds.ai/${address}_${item.token_id}_96x96`,
-                                defaultImage,
-                                altimage,
-                              ]}
+                              src={
+                                item.image
+                                  ? [
+                                      item.image,
+                                      `https://img.nftnerds.ai/${address}_${item.token_id}_96x96`,
+                                      defaultImage,
+                                      altimage,
+                                    ]
+                                  : [
+                                      `https://img.nftnerds.ai/${address}_${item.token_id}_96x96`,
+                                      defaultImage,
+                                      altimage,
+                                    ]
+                              }
                               size={"100%"}
                               style={{
                                 marginBottom: "15px",
@@ -482,16 +490,23 @@ const Trades = (props) => {
 
           <Row>
             <Col>
-              <img
+              <ImageItem
                 src={
                   modalData.image
-                    ? modalData.image
-                    : `https://img.nftnerds.ai/${address}_${modalData.token_id}_450x450`
+                    ? [
+                        modalData.image,
+                        `https://img.nftnerds.ai/${address}_${modalData.token_id}_450x450`,
+                        defaultImage,
+                        altimage,
+                      ]
+                    : [
+                        `https://img.nftnerds.ai/${address}_${modalData.token_id}_450x450`,
+                        defaultImage,
+                        altimage,
+                      ]
                 }
-                // src={modalData.image ? modalData.image : defaultImage}
-                width="100%"
+                size={"100%"}
                 style={{
-                  // filter: modalData.image ? "" : "blur(3px)",
                   marginBottom: "15px",
                 }}
               />
