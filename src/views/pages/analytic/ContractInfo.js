@@ -32,6 +32,8 @@ import Trades from "views/components/ContractInfo/Trades";
 import Tokens from "views/components/ContractInfo/Tokens";
 import Holders from "views/components/ContractInfo/Holders";
 import LiveView from "views/components/ContractInfo/LiveView";
+import TopNFTs from "views/components/ContractInfo/TopNFTs";
+import TopAccounts from "views/components/ContractInfo/TopAccounts";
 
 const explorerURL = "https://etherscan.io/";
 
@@ -258,7 +260,7 @@ const ContractInfo = (props) => {
             </Row>
           )}
           {/* Tabs */}
-          {type == "top" && (
+          {type == "trending" && (
             <Row>
               <Col>
                 <Card>
@@ -319,7 +321,7 @@ const ContractInfo = (props) => {
                         />
                       </TabPane>
                       <TabPane tabId="tab1">
-                        <Trades address={address} trades = {trades}/>
+                        <Trades address={address} trades={trades} />
                       </TabPane>
                       <TabPane tabId="tab2">
                         <Tokens
@@ -329,6 +331,55 @@ const ContractInfo = (props) => {
                       </TabPane>
                       <TabPane tabId="tab3">
                         <Holders address={address} />
+                      </TabPane>
+                    </TabContent>
+                  </CardBody>
+                </Card>
+              </Col>
+            </Row>
+          )}
+          {type == "top" && (
+            <Row>
+              <Col>
+                <Card>
+                  <CardHeader></CardHeader>
+                  <CardBody>
+                    <Nav className="nav-pills-info" pills>
+                      <NavItem>
+                        <NavLink
+                          data-toggle="tab"
+                          className={horizontalTabs === "tab0" ? "active" : ""}
+                          onClick={(e) => handleClickTab(e, "tab0")}
+                        >
+                          Top NFTs
+                        </NavLink>
+                      </NavItem>
+                      <NavItem>
+                        <NavLink
+                          data-toggle="tab"
+                          href="#pablo"
+                          className={horizontalTabs === "tab1" ? "active" : ""}
+                          onClick={(e) => handleClickTab(e, "tab1")}
+                        >
+                          Top Accounts
+                        </NavLink>
+                      </NavItem>
+                    </Nav>
+                    <TabContent
+                      className="tab-space"
+                      activeTab={horizontalTabs}
+                    >
+                      <TabPane tabId="tab0">
+                        <TopNFTs
+                          address={address}
+                          defaultImage={data.unsafeOpenseaImageUrl}
+                        />
+                      </TabPane>
+                      <TabPane tabId="tab1">
+                        <TopAccounts
+                          address={address}
+                          defaultImage={data.unsafeOpenseaImageUrl}
+                        />
                       </TabPane>
                     </TabContent>
                   </CardBody>

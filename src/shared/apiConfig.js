@@ -73,6 +73,9 @@ const apiConfig = {
     url: "http://137.184.120.200:8080/nerds/trades",
     method: "get",
   },
+  getTopNFTs: { url: "/api/icy/getTopNFTs", method: "post" },
+  getTopAccounts: { url: "/api/icy/getTopAccounts", method: "post" },
+
 };
 
 export default apiConfig;

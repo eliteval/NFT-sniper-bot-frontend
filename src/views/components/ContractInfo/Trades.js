@@ -33,7 +33,7 @@ const Trades = (props) => {
   let { address, trades } = props;
   const [data, setData] = useState([]);
   const [series, setSeries] = useState([]);
-  const [timeframe, setTimeFrame] = useState(1);
+  const [timeframe, setTimeFrame] = useState(10); //minutes
   const [isloading, setIsLoading] = useState(true);
   const notificationAlertRef = React.useRef(null);
   const notify = (message, type) => {
@@ -111,7 +111,7 @@ const Trades = (props) => {
   useEffect(() => {
     if (!trades.prices) return;
     var chartdata = [];
-    var gtTime = new Date().getTime() - timeframe * 60 * 60 * 1000;
+    var gtTime = new Date().getTime() - timeframe * 60 * 1000;
     console.log(gtTime);
     trades.prices.map((price, key) => {
       if (trades.timestamps[key] * 1000 > gtTime)
@@ -220,8 +220,40 @@ const Trades = (props) => {
                 id="0"
                 size="sm"
                 tag="label"
-                className={"btn-simple " + (timeframe == 1 ? "active" : "")}
-                onClick={() => handleChangeTimeFrame(1)}
+                className={"btn-simple " + (timeframe == 10 ? "active" : "")}
+                onClick={() => handleChangeTimeFrame(10)}
+              >
+                <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                  10m
+                </span>
+                <span className="d-block d-sm-none">
+                  <i className="tim-icons icon-single-02" />
+                </span>
+              </Button>
+              <Button
+                color="info"
+                id="0"
+                size="sm"
+                tag="label"
+                className={"btn-simple " + (timeframe == 30 ? "active" : "")}
+                onClick={() => handleChangeTimeFrame(30)}
+              >
+                <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
+                  30m
+                </span>
+                <span className="d-block d-sm-none">
+                  <i className="tim-icons icon-single-02" />
+                </span>
+              </Button>
+              <Button
+                color="info"
+                id="0"
+                size="sm"
+                tag="label"
+                className={
+                  "btn-simple " + (timeframe == 1 * 60 ? "active" : "")
+                }
+                onClick={() => handleChangeTimeFrame(1 * 60)}
               >
                 <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
                   1h
@@ -235,8 +267,10 @@ const Trades = (props) => {
                 id="1"
                 size="sm"
                 tag="label"
-                className={"btn-simple " + (timeframe == 4 ? "active" : "")}
-                onClick={() => handleChangeTimeFrame(4)}
+                className={
+                  "btn-simple " + (timeframe == 4 * 60 ? "active" : "")
+                }
+                onClick={() => handleChangeTimeFrame(4 * 60)}
               >
                 <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
                   4h
@@ -250,8 +284,10 @@ const Trades = (props) => {
                 id="2"
                 size="sm"
                 tag="label"
-                className={"btn-simple " + (timeframe == 24 ? "active" : "")}
-                onClick={() => handleChangeTimeFrame(24)}
+                className={
+                  "btn-simple " + (timeframe == 24 * 60 ? "active" : "")
+                }
+                onClick={() => handleChangeTimeFrame(24 * 60)}
               >
                 <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
                   1d
@@ -266,9 +302,9 @@ const Trades = (props) => {
                 size="sm"
                 tag="label"
                 className={
-                  "btn-simple " + (timeframe == 7 * 24 ? "active" : "")
+                  "btn-simple " + (timeframe == 7 * 24 * 60 ? "active" : "")
                 }
-                onClick={() => handleChangeTimeFrame(7 * 24)}
+                onClick={() => handleChangeTimeFrame(7 * 24 * 60)}
               >
                 <span className="d-none d-sm-block d-md-block d-lg-block d-xl-block">
                   7d

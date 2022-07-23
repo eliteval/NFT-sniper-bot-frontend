@@ -251,7 +251,7 @@ const TrendingCollections = (props) => {
                           <td className="text-left">{item.average}</td>
                           <td className="text-left">{item.volume} </td>
                           <td className="text-left">
-                            <a href={"/bot/contract/" + item.address + "/top"}>
+                            <a href={"/bot/contract/" + item.address + "/trending"}>
                               <Button
                                 style={{ marginRight: "8px" }}
                                 color="info"

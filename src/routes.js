@@ -46,15 +46,15 @@ const routes = [
     layout: "/bot",
     blockAT: true, //use when admin blocks this tab
   },
-  // {
-  //   path: "/top-collections",
-  //   name: "Top Collections",
-  //   rtlName: "",
-  //   icon: "tim-icons icon-chart-bar-32",
-  //   component: TopCollections,
-  //   layout: "/bot",
-  //   blockAT: true, //use when admin blocks this tab
-  // },
+  {
+    path: "/top-collections",
+    name: "Top Collections",
+    rtlName: "",
+    icon: "tim-icons icon-chart-bar-32",
+    component: TopCollections,
+    layout: "/bot",
+    blockAT: true, //use when admin blocks this tab
+  },
   {
     path: "/search",
     name: "Search Contract",
@@ -65,7 +65,7 @@ const routes = [
     hidden: true, //use when need to hide item in sidebar
   },
   {
-    path: "/contract/:address/:type?",
+    path: "/contract/:address/:type?", //type - top, trending, search
     name: "Contract Information",
     rtlName: "",
     icon: "tim-icons icon-chart-bar-32",
